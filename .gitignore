@@ -1,0 +1,12 @@
+# Visual Studio
+.vs/
+
+# Qt Creator
+.qtcreator
+build
+
+# CMake 
+out/
+CMakePresets.json
+CMakeUserPresets.json
+
