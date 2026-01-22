@@ -1,0 +1,19 @@
+Language: Cpp
+BasedOnStyle: Google
+
+IndentWidth: 2
+ColumnLimit: 100
+AllowShortFunctionsOnASingleLine: Inline
+PointerAlignment: Right
+DerivePointerAlignment: false
+SortIncludes: true
+
+StatementMacros:
+  - Q_UNUSED
+  - Q_INTERFACES
+  - Q_PROPERTY
+  - Q_OBJECT
+
+WhitespaceSensitiveMacros:
+  - SIGNAL
+  - SLOT
