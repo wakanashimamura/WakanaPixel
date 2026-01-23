@@ -29,6 +29,7 @@
 #include <QFileDialog>
 
 #include "ui_wsmainwindow.h"
+#include "wsimageprocessing.h"
 
 WSMainWindow::WSMainWindow(QWidget *parent) : QMainWindow(parent), m_ui(new Ui::WSMainWindow) {
   m_ui->setupUi(this);
@@ -48,6 +49,14 @@ void WSMainWindow::openImage() {
   if (!m_image.load(fileName)) {
     return;
   }
+
+  // === temporary code ===
+
+  m_image.setEdited(ws::downscale(m_image.edited(), 143, 256));
+
+  m_image.setEdited(ws::upscale(m_image.edited(), 683, 1280));
+
+  // ======================
 
   m_ui->graphicsView->setImage(m_image.edited());
   m_ui->graphicsView->fitToView();

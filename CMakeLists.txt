@@ -29,12 +29,14 @@ set(SOURCES
   src/main.cpp
   src/wsmainwindow.cpp
   src/wsgraphicsview.cpp
+  src/wsimageprocessing.cpp
 )
 
 set(HEADER
   include/wsmainwindow.h
   include/wsgraphicsview.h
   include/wsimage.h
+  include/wsimageprocessing.h
 )
 
 set(UI
