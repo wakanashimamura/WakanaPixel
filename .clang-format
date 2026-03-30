@@ -1,0 +1,59 @@
+Language: Cpp
+Standard: c++20
+BasedOnStyle: Google
+
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ContinuationIndentWidth: 4
+
+ColumnLimit: 100
+
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+
+AlignConsecutiveAssignments: true
+
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortLambdasOnASingleLine: Inline
+
+SortIncludes: CaseInsensitive
+
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:    '^"'
+    Priority: 1
+  - Regex:    '^<Q'
+    Priority: 2
+  - Regex:    '^<'
+    Priority: 3
+
+BreakConstructorInitializers: BeforeColon
+PackConstructorInitializers: Never
+
+AlwaysBreakTemplateDeclarations: Yes 
+
+FixNamespaceComments: true
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+ReflowComments: false
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 1
+
+StatementMacros:
+  - Q_UNUSED
+  - Q_INTERFACES
+  - Q_PROPERTY
+  - Q_OBJECT
+  - Q_DECLARE_METATYPE
+  - Q_ENUM
+
+WhitespaceSensitiveMacros:
+  - SIGNAL
+  - SLOT
+  - Q_ASSERT
