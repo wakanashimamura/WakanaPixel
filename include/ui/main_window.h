@@ -1,6 +1,8 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
+#include "model/image.h"
+
 #include <QMainWindow>
 
 QT_BEGIN_NAMESPACE
@@ -16,7 +18,15 @@ class MainWindow : public QMainWindow {
   MainWindow(QWidget* parent = nullptr);
   ~MainWindow();
 
+ private slots:
+  void onOpen();
+  void onSaveAs();
+  void onFitToView();
+  void onZoomIn();
+  void onZoomOut();
+
  private:
-  Ui::MainWindow* ui;
+  Ui::MainWindow* m_ui;
+  Image m_image;
 };
 #endif  // MAIN_WINDOW_H

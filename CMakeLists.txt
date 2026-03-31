@@ -27,10 +27,15 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 
 set(SOURCES
   src/main.cc
+
+  src/model/image.cc
+
+  src/ui/graphics_view.cc
   src/ui/main_window.cc
 )
 
 set(HEADER
+  include/ui/graphics_view.h
   include/ui/main_window.h
 )
 
