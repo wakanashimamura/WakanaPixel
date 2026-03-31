@@ -33,7 +33,9 @@ void MainWindow::onOpen() {
                                    "(*.jpg *.jpeg *.jpe *.jfif);; PNG(*.png);");
 
   m_image.open(path);
+
   m_ui->graphicsView->setImage(m_image.processed());
+  m_ui->graphicsView->fitToView();
 }
 
 void MainWindow::onSaveAs() {

@@ -28,6 +28,8 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 set(SOURCES
   src/main.cc
 
+  src/core/scale.cc
+
   src/model/image.cc
 
   src/ui/graphics_view.cc
