@@ -26,6 +26,8 @@ class MainWindow : public QMainWindow {
   void onZoomOut();
 
  private:
+  void updateImage();
+
   Ui::MainWindow* m_ui;
   Image m_image;
 };

@@ -73,7 +73,7 @@ union RGB {
       : argb(color) {}
 
   constexpr RGB(ChannelType red_, ChannelType green_, ChannelType blue_,
-                ChannelType alpha_) noexcept
+                ChannelType alpha_ = 255) noexcept
       : blue(blue_),
         green(green_),
         red(red_),

@@ -29,6 +29,7 @@ set(SOURCES
   src/main.cc
 
   src/core/scale.cc
+  src/core/pixelart.cc
 
   src/model/image.cc
   src/model/palette.cc
@@ -54,7 +55,7 @@ set(RESOURCES
 # ========================
 
 qt_add_executable(${PROJECT_NAME}
-  #WIN32 
+  WIN32 
   MACOSX_BUNDLE
   ${SOURCES}
   ${HEADER}

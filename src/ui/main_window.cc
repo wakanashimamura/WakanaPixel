@@ -1,5 +1,6 @@
 #include "ui/main_window.h"
 
+#include "core/pixelart.h"
 #include "ui_main_window.h"
 
 #include <QFileDialog>
@@ -34,7 +35,7 @@ void MainWindow::onOpen() {
 
   m_image.open(path);
 
-  m_ui->graphicsView->setImage(m_image.processed());
+  updateImage();
   m_ui->graphicsView->fitToView();
 }
 
@@ -57,4 +58,9 @@ void MainWindow::onZoomIn() {
 
 void MainWindow::onZoomOut() {
   m_ui->graphicsView->zoomOut();
+}
+
+void MainWindow::updateImage() {
+  m_image = pixelart(m_image.original());
+  m_ui->graphicsView->setImage(m_image.processed());
 }

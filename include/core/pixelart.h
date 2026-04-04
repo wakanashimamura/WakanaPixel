@@ -23,18 +23,11 @@
 //
 // ================================================================================================
 
-#ifndef NEAREST_NEIGHBOR_SCALE_H_
-#define NEAREST_NEIGHBOR_SCALE_H_
+#ifndef PIXELART_PIPELINE_H_
+#define PIXELART_PIPELINE_H_
 
-#include <QImage>
-#include <QSize>
+#include "QImage"
 
-enum class RoundMode { kFloor, kRound, kCeil };
+QImage pixelart(const QImage& image);
 
-QImage downscale(const QImage& srcImage, const QSize& size, RoundMode mode = RoundMode::kRound);
-
-QImage upscale(const QImage& srcImage, const QSize&, RoundMode mode = RoundMode::kRound);
-
-QImage upscale(const QImage& srcImage, int factor, RoundMode mode = RoundMode::kRound);
-
-#endif  // !NEAREST_NEIGHBOR_SCALE_H_
+#endif  // !PIXELART_PIPELINE_H_
