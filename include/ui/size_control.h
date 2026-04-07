@@ -1,4 +1,5 @@
 // ================================================================================================
+// ================================================================================================
 //
 // WakanaPixel - This software for creating digital art converts picture into pixel art.
 //
@@ -23,25 +24,54 @@
 //
 // ================================================================================================
 
-#ifndef NEAREST_NEIGHBOR_SCALE_H_
-#define NEAREST_NEIGHBOR_SCALE_H_
+#ifndef SIZE_CONTROL_WIDGE_H_
+#define SIZE_CONTROL_WIDGE_H_
 
-#include "core/utils.h"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSlider>
+#include <QSpinBox>
+#include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
-#include <QImage>
-#include <QSize>
+class SizeControl : public QWidget {
+  Q_OBJECT
 
-struct ScaleParams {
-  QSize size;
-  RoundMode mode = RoundMode::Round;
+ public:
+  explicit SizeControl(QWidget* parent = nullptr);
+
+  void setTopSpacing(int spacing);
+  void setMainSpacing(int spacing);
+
+  void setTopMargins(int left, int top, int right, int bottom);
+  void setMainMargins(int left, int top, int right, int bottom);
+
+  void setMinimum(int value);
+  int minimum() const;
+
+  void setMaximum(int value);
+  int maximum() const;
+
+  int value() const;
+  QString text() const;
+
+ public slots:
+  void setValue(int value);
+  void setRange(int min, int max);
+
+  void setText(const QString& text);
+
+ signals:
+  void valueChanged(int value);
+
+ private:
+  QSlider* m_slider;
+  QSpinBox* m_spinBox;
+  QLabel* m_label;
+
+  QHBoxLayout* m_hLayout;
+  QVBoxLayout* m_vLayout;
 };
 
-// Fits the image size into a rectangle of the given dimensions while preserving the aspect ratio.
-// If the image already fits within the rectangle, it simply returns the original image size.
-QSize fitImageToScreen(QSize imageSize, QSize screenSize);
-
-QImage scale(const QImage& image, const ScaleParams& params);
-
-QImage upScale(const QImage& image, int factor);
-
-#endif  // !NEAREST_NEIGHBOR_SCALE_H_
+#endif  // !SIZE_CONTROL_WIDGE_H_

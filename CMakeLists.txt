@@ -36,11 +36,15 @@ set(SOURCES
 
   src/ui/graphics_view.cc
   src/ui/main_window.cc
+  src/ui/scale_control.cc
+  src/ui/size_control.cc
 )
 
 set(HEADER
   include/ui/graphics_view.h
   include/ui/main_window.h
+  include/ui/scale_control.h
+  include/ui/size_control.h
 )
 
 set(UI

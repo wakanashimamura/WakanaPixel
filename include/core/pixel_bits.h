@@ -32,28 +32,33 @@
 
 #include <type_traits>
 
-template <bool IsConst>
-class BasePixelBits {
+enum class AccessMode { ReadWrite, ReadOnly };
+
+template <AccessMode Mode>
+class PixelBits {
  public:
   // ----------------------------------------------------------------------------------------------
   // Type aliases
   // ----------------------------------------------------------------------------------------------
 
-  using BytePtr  = std::conditional_t<IsConst, const uchar*, uchar*>;
-  using PixelPtr = std::conditional_t<IsConst, const RGB*, RGB*>;
-  using ImageRef = std::conditional_t<IsConst, const QImage&, QImage&>;
-  using ImagePtr = std::conditional_t<IsConst, const QImage*, QImage*>;
+  static constexpr bool kIsReadOnly = (Mode == AccessMode::ReadOnly);
+
+  using BytePtr  = std::conditional_t<kIsReadOnly, const uchar*, uchar*>;
+  using PixelPtr = std::conditional_t<kIsReadOnly, const RGB*, RGB*>;
+  using ImageRef = std::conditional_t<kIsReadOnly, const QImage&, QImage&>;
+  using ImagePtr = std::conditional_t<kIsReadOnly, const QImage*, QImage*>;
 
   // ----------------------------------------------------------------------------------------------
   // Constructors
   // ----------------------------------------------------------------------------------------------
 
-  BasePixelBits() = default;
+  PixelBits() = default;
 
-  explicit BasePixelBits(ImageRef image) { setImage(image); }
+  explicit PixelBits(ImageRef image) { setImage(image); }
 
-  template <bool OtherConst, typename = std::enable_if_t<IsConst && !OtherConst>>
-  BasePixelBits(const BasePixelBits<OtherConst>& other)
+  template <AccessMode OtherMode,
+            typename = std::enable_if_t<kIsReadOnly && OtherMode == AccessMode::ReadWrite>>
+  PixelBits(const PixelBits<OtherMode>& other)
       : m_image(other.m_image),
         m_bits(other.m_bits),
         m_bytesPerLine(other.m_bytesPerLine),
@@ -89,14 +94,8 @@ class BasePixelBits {
                "BasePixelBits::setImage",
                "Unsupported pixel format - pixel access will be incorrect");
 
-    m_image = &image;
-
-    if constexpr (IsConst) {
-      m_bits = image.constBits();
-    } else {
-      m_bits = image.bits();
-    }
-
+    m_image        = &image;
+    m_bits         = image.bits();
     m_bytesPerLine = image.bytesPerLine();
     m_width        = image.width();
     m_height       = image.height();
@@ -122,7 +121,7 @@ class BasePixelBits {
   [[nodiscard]] BytePtr bits() const { return m_bits; }
   [[nodiscard]] int bytesPerLine() const { return m_bytesPerLine; }
 
-  [[nodiscard]] ImagePtr image() { return m_image; }
+  [[nodiscard]] ImageRef image() { return *m_image; }
   [[nodiscard]] const QImage* image() const { return m_image; }
 
  private:
@@ -140,7 +139,7 @@ class BasePixelBits {
 // Type aliases
 // ----------------------------------------------------------------------------------------------
 
-using PixelBits      = BasePixelBits<false>;
-using ConstPixelBits = BasePixelBits<true>;
+using MutablePixelBits  = PixelBits<AccessMode::ReadWrite>;
+using ReadOnlyPixelBits = PixelBits<AccessMode::ReadOnly>;
 
 #endif  // !PIXEL_BITS_H_

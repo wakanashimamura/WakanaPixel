@@ -42,7 +42,7 @@ union RGB {
   // Enumerations
   // ----------------------------------------------------------------------------------------------
 
-  enum class Channel { kAlpha, kRed, kGreen, kBlue };
+  enum class Channel { Alpha, Red, Green, Blue };
 
   // ----------------------------------------------------------------------------------------------
   // Constants
@@ -95,13 +95,13 @@ union RGB {
   [[nodiscard]]
   static ChannelType color(const RGB color, Channel channel) {
     switch (channel) {
-      case Channel::kRed:
+      case Channel::Red:
         return color.red;
-      case Channel::kGreen:
+      case Channel::Green:
         return color.green;
-      case Channel::kBlue:
+      case Channel::Blue:
         return color.blue;
-      case Channel::kAlpha:
+      case Channel::Alpha:
         return color.alpha;
     }
   }

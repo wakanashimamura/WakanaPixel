@@ -1,4 +1,5 @@
 // ================================================================================================
+// ================================================================================================
 //
 // WakanaPixel - This software for creating digital art converts picture into pixel art.
 //
@@ -23,25 +24,51 @@
 //
 // ================================================================================================
 
-#ifndef NEAREST_NEIGHBOR_SCALE_H_
-#define NEAREST_NEIGHBOR_SCALE_H_
+#ifndef UTILS_H_
+#define UTILS_H_
 
-#include "core/utils.h"
+#include <cmath>
+#include <cstdint>
 
-#include <QImage>
-#include <QSize>
+enum class RoundMode { Floor, Round, Ceil };
 
-struct ScaleParams {
-  QSize size;
-  RoundMode mode = RoundMode::Round;
-};
+[[nodiscard]] inline int round(double value, RoundMode mode) {
+  switch (mode) {
+    case RoundMode::Floor:
+      return static_cast<int>(std::floor(value));
+    case RoundMode::Round:
+      return static_cast<int>(std::round(value));
+    case RoundMode::Ceil:
+      return static_cast<int>(std::ceil(value));
+    default:
+      return value;
+  }
+}
 
-// Fits the image size into a rectangle of the given dimensions while preserving the aspect ratio.
-// If the image already fits within the rectangle, it simply returns the original image size.
-QSize fitImageToScreen(QSize imageSize, QSize screenSize);
+[[nodiscard]] inline uint8_t clampByte(int value) {
+  if (value > 255) {
+    return 255;
+  } else if (value < 0) {
+    return 0;
+  }
 
-QImage scale(const QImage& image, const ScaleParams& params);
+  return value;
+}
 
-QImage upScale(const QImage& image, int factor);
+[[nodiscard]] inline int square(int value) {
+  return value * value;
+}
 
-#endif  // !NEAREST_NEIGHBOR_SCALE_H_
+[[nodiscard]] inline double square(double value) {
+  return value * value;
+}
+
+[[nodiscard]] inline int cube(int value) {
+  return value * value * value;
+}
+
+[[nodiscard]] inline double cube(double value) {
+  return value * value * value;
+}
+
+#endif  // !UTILS_H_

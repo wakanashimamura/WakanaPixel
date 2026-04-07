@@ -6,22 +6,11 @@
 
 QImage pixelart(const QImage& image) {
   QImage processed = image;
-  QSize size;
+  QSize size       = fitImageToScreen(image.size(), {320, 256});
 
-  if (image.width() > size.width() || image.height() > size.height()) {
-    double scaleW      = static_cast<double>(320) / image.width();
-    double scaleH      = static_cast<double>(256) / image.height();
-    double coefficient = std::min(scaleW, scaleH);
+  processed = scale(image, {size, RoundMode::Ceil});
 
-    size.setWidth(image.width() * coefficient);
-    size.setHeight(image.height() * coefficient);
-  } else {
-    size = image.size();
-  }
-
-  processed = downscale(image, size, RoundMode::kCeil);
-
-  processed = upscale(processed, 8);
+  processed = upScale(processed, 8);
 
   return processed;
 }

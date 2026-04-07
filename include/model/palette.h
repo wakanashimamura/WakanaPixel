@@ -38,7 +38,7 @@ class Palette {
   // Enumerations
   // ----------------------------------------------------------------------------------------------
 
-  enum class ColorDistMode { kRGB, kWeightedRGB, kLab };
+  enum class ColorDistMode { RGB, WeightedRGB, Lab };
 
   // ----------------------------------------------------------------------------------------------
   // Type aliases

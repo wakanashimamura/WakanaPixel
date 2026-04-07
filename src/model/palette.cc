@@ -52,13 +52,13 @@ Palette::Palette(const std::string& name, const RGBColorsType& colors, bool labE
 
 RGB Palette::findNearestColor(RGB pixel, ColorDistMode mode) const {
   switch (mode) {
-    case Palette::ColorDistMode::kRGB:
+    case Palette::ColorDistMode::RGB:
       return findNearestRGB(pixel);
 
-    case Palette::ColorDistMode::kWeightedRGB:
+    case Palette::ColorDistMode::WeightedRGB:
       return findNearestWeightedRgb(pixel);
 
-    case Palette::ColorDistMode::kLab:
+    case Palette::ColorDistMode::Lab:
       return findNearestLab(pixel);
   }
 

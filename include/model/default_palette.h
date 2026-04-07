@@ -29,6 +29,8 @@
 
 #include "model/palette.h"
 
+#include <algorithm>
+#include <unordered_set>
 #include <vector>
 
 const std::vector<Palette> createDefaultPalettes() {
@@ -522,6 +524,27 @@ const std::vector<Palette> createDefaultPalettes() {
       0xFF00FF00,
       0xFF00D8D8,
       0xFFFFFFFF
+    }
+  );
+
+   palettes.emplace_back(
+    "ZX",
+    Palette::RGBColorsType {
+        0xFF000000,
+        0xFF0011CB,
+        0xFF0022FF,
+        0xFFDD2211,
+        0xFFFF3312,
+        0xFFDD32CC,
+        0xFF01CC22,
+        0xFFFE33FF,
+        0xFF00CCCB,
+        0xFF00FF23,
+        0xFF00FFFF,
+        0xFFCDCC22,
+        0xFFCCCCCC,
+        0xFFFFFF33,
+        0xFFFFFFFF
     }
   );
 

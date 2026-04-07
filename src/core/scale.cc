@@ -29,73 +29,63 @@
 
 #include <vector>
 
-namespace {
+QSize fitImageToScreen(QSize imageSize, QSize screenSize) {
+  if (imageSize.width() > screenSize.width() || imageSize.height() > screenSize.height()) {
+    double factorW = static_cast<double>(screenSize.width()) / imageSize.width();
+    double factorH = static_cast<double>(screenSize.height()) / imageSize.height();
 
-int round(double value, RoundMode mode) {
-  switch (mode) {
-    case RoundMode::kFloor:
-      return static_cast<int>(std::floor(value));
-    case RoundMode::kRound:
-      return static_cast<int>(std::round(value));
-    case RoundMode::kCeil:
-      return static_cast<int>(std::ceil(value));
-    default:
-      return value;
+    double factor = std::min(factorW, factorH);
+
+    QSize size;
+    size.setWidth(std::round(imageSize.width() * factor));
+    size.setHeight(std::round(imageSize.height() * factor));
+    return size;
   }
+
+  return imageSize;
 }
 
-QImage nearestNeighborScale(const QImage& srcImage, QSize size, RoundMode mode) {
+QImage scale(const QImage& image, const ScaleParams& params) {
   // Return empty image if input is invali
-  if (srcImage.isNull()) {
-    return srcImage;
+  if (image.isNull()) {
+    return image;
   }
-  if (size.isEmpty()) {
+  if (params.size.isEmpty()) {
     return QImage();
   }
 
-  QImage dstImage(size.width(), size.height(), srcImage.format());
+  QImage result(params.size.width(), params.size.height(), image.format());
 
-  PixelBits dstBits(dstImage);
-  ConstPixelBits srcBits(srcImage);
+  MutablePixelBits resultBits(result);
+  ReadOnlyPixelBits imageBits(image);
 
   // Calculate the scaling factor determine how much larger or smaller the output image will be
-  double scaleY = static_cast<double>(srcBits.height()) / size.height();
-  double scaleX = static_cast<double>(srcBits.width()) / size.width();
+  double scaleY = static_cast<double>(imageBits.height()) / params.size.height();
+  double scaleX = static_cast<double>(imageBits.width()) / params.size.width();
 
   // Precompute X-coordinates to avoid repeated calculations, improving performance.
-  std::vector<int> srcPixelsX;
-  srcPixelsX.reserve(size.width());
-  for (int x = 0; x < size.width(); ++x) {
+  std::vector<int> pixelsX;
+  pixelsX.reserve(params.size.width());
+  for (int x = 0; x < params.size.width(); ++x) {
     // Map X coordinates to source pixels
-    srcPixelsX.push_back(std::clamp(round(x * scaleX, mode), 0, srcBits.width() - 1));
+    pixelsX.push_back(std::clamp(round(x * scaleX, params.mode), 0, imageBits.width() - 1));
   }
 
-  for (int y = 0; y < size.height(); ++y) {
+  for (int y = 0; y < params.size.height(); ++y) {
     // Map Y coordinates to source pixels
-    int srcPixelY = std::clamp(round(y * scaleY, mode), 0, srcBits.height() - 1);
+    int pixelY = std::clamp(round(y * scaleY, params.mode), 0, imageBits.height() - 1);
 
-    for (int x = 0; x < size.width(); ++x) {
-      dstBits[y][x] = srcBits[srcPixelY][srcPixelsX[x]];
+    for (int x = 0; x < params.size.width(); ++x) {
+      resultBits[y][x] = imageBits[pixelY][pixelsX[x]];
     }
   }
-  return dstImage;
+  return result;
 }
 
-}  // namespace
-
-QImage downscale(const QImage& srcImage, const QSize& size, RoundMode mode) {
-  return nearestNeighborScale(srcImage, size, mode);
-}
-
-QImage upscale(const QImage& srcImage, const QSize& size, RoundMode mode) {
-  return nearestNeighborScale(srcImage, size, mode);
-}
-
-QImage upscale(const QImage& srcImage, int factor, RoundMode mode) {
+QImage upScale(const QImage& image, int factor) {
   if (factor <= 0) {
     return QImage();
   }
 
-  QSize size(srcImage.width() * factor, srcImage.height() * factor);
-  return nearestNeighborScale(srcImage, size, mode);
+  return scale(image, {image.size() * factor, RoundMode::Round});
 }
