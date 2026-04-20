@@ -28,21 +28,26 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 set(SOURCES
   src/main.cc
 
+  src/core/image_processing.cc
   src/core/scale.cc
-  src/core/pixelart.cc
 
   src/model/image.cc
   src/model/palette.cc
+  src/model/settings.cc
 
+  src/ui/crop_control.cc
   src/ui/graphics_view.cc
   src/ui/main_window.cc
+  src/ui/resize_mode_control.cc
   src/ui/scale_control.cc
   src/ui/size_control.cc
 )
 
 set(HEADER
+  include/ui/crop_control.h
   include/ui/graphics_view.h
   include/ui/main_window.h
+  include/ui/resize_mode_control.h
   include/ui/scale_control.h
   include/ui/size_control.h
 )

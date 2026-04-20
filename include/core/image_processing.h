@@ -23,48 +23,17 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
-
-#include "model/image.h"
+#include "core/scale.h"
 #include "model/settings.h"
-#include "ui/resize_mode_control.h"
-#include "ui/scale_control.h"
 
-#include <QMainWindow>
+#include <QImage>
+#include <QSize>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
-  Q_OBJECT
-
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
-
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
-
-  void onPlatformChanged();
-
-  void onDownScaleControlChanged();
-  void onPreprocess();
-
- private:
-  void updateDonwScale();
-
-  Ui::MainWindow* m_ui;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl       = nullptr;
-  ResizeModeControl* m_resizeModeControl = nullptr;
-};
-#endif  // MAIN_WINDOW_H
+QImage preprocessImage(
+    QImage image,
+    QSize size,
+    RoundMode mode,
+    DownScaleMode scaleMode,
+    ResizeMode resizeMode,
+    int position
+);

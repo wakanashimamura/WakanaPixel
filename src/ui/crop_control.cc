@@ -23,21 +23,27 @@
 //
 // ================================================================================================
 
-#include "ui/size_control.h"
+#include "ui/crop_control.h"
 
-SizeControl::SizeControl(QWidget* parent)
+#include "core/scale.h"
+
+CropControl::CropControl(QWidget* parent)
     : QWidget(parent) {
-  m_slider  = new QSlider(Qt::Horizontal, this);
-  m_spinBox = new QSpinBox(this);
-  m_label   = new QLabel("Size", this);
+  m_slider     = new QSlider(Qt::Horizontal, this);
+  m_labelLeft  = new QLabel(this);
+  m_labelRight = new QLabel(this);
 
-  setRange(0, 100);
-  setRange(0, 100);
+  m_hLayout = new QHBoxLayout();
+  m_vLayout = new QVBoxLayout();
+
+  setRange(0, 0);
+  setMode(CropMode::Vertical);
 
   // Layout Top
   m_hLayout = new QHBoxLayout();
-  m_hLayout->addWidget(m_label);
-  m_hLayout->addWidget(m_spinBox);
+  m_hLayout->addWidget(m_labelLeft);
+  m_hLayout->addStretch();
+  m_hLayout->addWidget(m_labelRight);
 
   setTopSpacing(0);
   setTopMargins(0, 0, 0, 0);
@@ -52,62 +58,58 @@ SizeControl::SizeControl(QWidget* parent)
 
   setLayout(m_vLayout);
 
-  connect(m_slider, &QSlider::valueChanged, m_spinBox, &QSpinBox::setValue);
-  connect(m_spinBox, &QSpinBox::valueChanged, m_slider, &QSlider::setValue);
-
-  connect(m_slider, &QSlider::valueChanged, this, &SizeControl::valueChanged);
+  connect(m_slider, &QSlider::valueChanged, this, &CropControl::valueChanged);
 }
 
-void SizeControl::setTopSpacing(int spacing) {
+void CropControl::setTopSpacing(int spacing) {
   m_hLayout->setSpacing(spacing);
 }
-void SizeControl::setMainSpacing(int spacing) {
+void CropControl::setMainSpacing(int spacing) {
   m_vLayout->setSpacing(spacing);
 }
 
-void SizeControl::setTopMargins(int left, int top, int right, int bottom) {
+void CropControl::setTopMargins(int left, int top, int right, int bottom) {
   m_hLayout->setContentsMargins(left, top, right, bottom);
 }
 
-void SizeControl::setMainMargins(int left, int top, int right, int bottom) {
+void CropControl::setMainMargins(int left, int top, int right, int bottom) {
   m_vLayout->setContentsMargins(left, top, right, bottom);
 }
 
-void SizeControl::setMinimum(int value) {
+void CropControl::setMinimum(int value) {
   m_slider->setMinimum(value);
-  m_spinBox->setMinimum(value);
 }
 
-int SizeControl::minimum() const {
+int CropControl::minimum() const {
   return m_slider->minimum();
 }
 
-void SizeControl::setMaximum(int value) {
+void CropControl::setMaximum(int value) {
   m_slider->setMaximum(value);
-  m_spinBox->setMaximum(value);
 }
 
-int SizeControl::maximum() const {
+int CropControl::maximum() const {
   return m_slider->maximum();
 }
 
-int SizeControl::value() const {
+int CropControl::value() const {
   return m_slider->value();
 }
 
-QString SizeControl::text() const {
-  return m_label->text();
+void CropControl::setMode(CropMode mode) {
+  if (mode == CropMode::Horizontal) {
+    m_labelLeft->setText("Left");
+    m_labelRight->setText("Right");
+  } else {
+    m_labelLeft->setText("top");
+    m_labelRight->setText("bottom");
+  }
 }
 
-void SizeControl::setValue(int value) {
+void CropControl::setValue(int value) {
   m_slider->setValue(value);
 }
 
-void SizeControl::setRange(int min, int max) {
+void CropControl::setRange(int min, int max) {
   m_slider->setRange(min, max);
-  m_spinBox->setRange(min, max);
-}
-
-void SizeControl::setText(const QString& text) {
-  m_label->setText(text);
 }

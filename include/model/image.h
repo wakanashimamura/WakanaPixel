@@ -37,27 +37,26 @@ class Image {
 
   explicit operator bool() const { return m_isLoaded; }
 
-  Image& operator=(const QImage& image) {
-    setProcessed(image);
-    return *this;
-  }
-
   bool open(const QString& path);
   bool save(const QString& path) const;
 
   [[nodiscard]] const QImage& original() const { return m_original; }
+  [[nodiscard]] const QImage& preprocess() const { return m_preprocess; }
   [[nodiscard]] const QImage& processed() const { return m_processed; }
   [[nodiscard]] QString filePath() const { return m_filePath; }
   [[nodiscard]] bool isLoaded() const { return m_isLoaded; }
 
   [[nodiscard]] QSize originalSize() const { return m_original.size(); }
+  [[nodiscard]] QSize preprocessSize() const { return m_preprocess.size(); }
   [[nodiscard]] QSize processedSize() const { return m_processed.size(); }
 
+  bool setPreprocess(const QImage& image);
   bool setProcessed(const QImage& image);
   void resetProcessed() { m_processed = m_original; }
 
  private:
   QImage m_original;
+  QImage m_preprocess;
   QImage m_processed;
   QString m_filePath;
   bool m_isLoaded = false;

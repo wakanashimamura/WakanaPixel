@@ -38,9 +38,10 @@ bool Image::open(const QString& path) {
     m_original = m_original.convertToFormat(QImage::Format_RGB32);
   }
 
-  m_filePath  = path;
-  m_processed = m_original;
-  m_isLoaded  = true;
+  m_filePath   = path;
+  m_preprocess = m_original;
+  m_processed  = m_original;
+  m_isLoaded   = true;
 
   return true;
 }
@@ -62,6 +63,15 @@ bool Image::setProcessed(const QImage& image) {
     return false;
   }
   m_processed = image;
+
+  return true;
+}
+
+bool Image::setPreprocess(const QImage& image) {
+  if (image.isNull()) {
+    return false;
+  }
+  m_preprocess = image;
 
   return true;
 }

@@ -26,66 +26,150 @@
 #ifndef SCALE_CONTROL_WIDGE_H_
 #define SCALE_CONTROL_WIDGE_H_
 
+#include "core/utils.h"
 #include "ui/size_control.h"
 
 #include <QComboBox>
 #include <QLabel>
+#include <QVariant>
 #include <QWidget>
 
 class ScaleControl : public QWidget {
   Q_OBJECT
 
  public:
+  // ----------------------------------------------------------------------------------------------
+  // Constructors
+  // ----------------------------------------------------------------------------------------------
+
   explicit ScaleControl(QWidget* parent = nullptr);
+
+  // ----------------------------------------------------------------------------------------------
+  // Title
+  // ----------------------------------------------------------------------------------------------
+
+  QString title() const;
+
+  // ----------------------------------------------------------------------------------------------
+  // ComboBox
+  // ----------------------------------------------------------------------------------------------
+
+  void addItem(const QString& text, const QVariant& userData = QVariant());
+  QVariant currentData(int role = Qt::UserRole) const;
+
+  int currentIndex() const;
+  QString currentText() const;
+
+  void hideComboBox();
+  void showComboBox();
+
+  // ----------------------------------------------------------------------------------------------
+  // Width
+  // ----------------------------------------------------------------------------------------------
 
   void setWidthMinimum(int value);
   int widthMinimum() const;
 
-  void setHeightMinimum(int value);
-  int heightMinimum() const;
-
   void setWidthMaximum(int value);
   int widthMaximum() const;
+  QSize scaleRange();
+
+  int widthValue() const;
+  QSize scaleSize() const;
+
+  void hideWidth();
+  void showWidth();
+
+  // ----------------------------------------------------------------------------------------------
+  // Height
+  // ----------------------------------------------------------------------------------------------
+
+  void setHeightMinimum(int value);
+  int heightMinimum() const;
 
   void setHeightMaximum(int value);
   int heightmaximum() const;
 
-  void hideWidth();
-  void hideHeight();
-  void hideComboBox();
-
-  void showWidth();
-  void showHeight();
-  void showComboBox();
-
-  int widthValue() const;
   int heightValue() const;
 
-  QString title() const;
+  void hideHeight();
+  void showHeight();
+
+  // ----------------------------------------------------------------------------------------------
+  // Round mode
+  // ----------------------------------------------------------------------------------------------
+
+  RoundMode currentRoundMode() const;
+
+  void hideRoundMode();
+  void showRoundMode();
 
  public slots:
-  void setWidth(int value);
-  void setHeight(int value);
 
-  void setWidthRange(int min, int max);
-  void setHeightRange(int min, int max);
-
-  void setCurrentIndex(int index);
+  // ----------------------------------------------------------------------------------------------
+  // Title
+  // ----------------------------------------------------------------------------------------------
 
   void setTitle(const QString& text);
 
+  // ----------------------------------------------------------------------------------------------
+  // ComboBox
+  // ----------------------------------------------------------------------------------------------
+
+  void clear();
+  void setCurrentIndex(int index);
+
+  // ----------------------------------------------------------------------------------------------
+  // Width / Height
+  // ----------------------------------------------------------------------------------------------
+
+  void setWidth(int value);
+  void setWidthRange(int min, int max);
+  void setWidthEnabled(bool value);
+
+  void setHeight(int value);
+  void setHeightRange(int min, int max);
+  void setHeightEnabled(bool value);
+
+  void setScaleSize(QSize size);
+  void setScaleRange(QSize size);
+
+  // ----------------------------------------------------------------------------------------------
+  // Round mode
+  // ----------------------------------------------------------------------------------------------
+
+  void setCurrentRoundMode(RoundMode mode);
+
  signals:
+
+  void scaleSettingsChanged();
+
+  // ----------------------------------------------------------------------------------------------
+  // ComboBox
+  // ----------------------------------------------------------------------------------------------
+  void currentIndexChanged(int index);
+  void currentTextChanged(const QString& text);
+
+  // ----------------------------------------------------------------------------------------------
+  // Width / Height
+  // ----------------------------------------------------------------------------------------------
+
   void widthChanged(int value);
   void heightChanged(int value);
 
-  void currentIndexChanged(int index);
-  void currentTextChanged(const QString& text);
+  // ----------------------------------------------------------------------------------------------
+  // Round mode
+  // ----------------------------------------------------------------------------------------------
+
+  void roundModeChanged(RoundMode mode);
 
  private:
   QLabel* m_label;
   QComboBox* m_combo;
   SizeControl* m_width;
   SizeControl* m_height;
+  QLabel* m_roundLabel;
+  QComboBox* m_roundCombo;
 };
 
 #endif  // !SCALE_CONTROL_WIDGE_H_

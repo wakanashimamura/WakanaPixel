@@ -27,17 +27,29 @@
 
 #include <QVBoxLayout>
 
+// ----------------------------------------------------------------------------------------------
+// Constructors
+// ----------------------------------------------------------------------------------------------
+
 ScaleControl::ScaleControl(QWidget* parent)
     : QWidget(parent) {
-  m_label  = new QLabel(this);
-  m_combo  = new QComboBox(this);
-  m_width  = new SizeControl(this);
-  m_height = new SizeControl(this);
+  m_label      = new QLabel(this);
+  m_combo      = new QComboBox(this);
+  m_width      = new SizeControl(this);
+  m_height     = new SizeControl(this);
+  m_roundLabel = new QLabel(this);
+  m_roundCombo = new QComboBox(this);
 
-  m_label->setText("Title");
+  m_label->setText("Scale");
 
-  m_width->setText("width");
-  m_height->setText("height");
+  m_width->setText("Width");
+  m_height->setText("Height");
+
+  m_roundLabel->setText("Rounding");
+  m_roundCombo->addItem("Floor", QVariant::fromValue(RoundMode::Floor));
+  m_roundCombo->addItem("Round", QVariant::fromValue(RoundMode::Round));
+  m_roundCombo->addItem("Ceil", QVariant::fromValue(RoundMode::Ceil));
+  setCurrentRoundMode(RoundMode::Round);
 
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->setSpacing(6);
@@ -47,25 +59,69 @@ ScaleControl::ScaleControl(QWidget* parent)
   layout->addWidget(m_combo);
   layout->addWidget(m_width);
   layout->addWidget(m_height);
+  layout->addWidget(m_roundLabel);
+  layout->addWidget(m_roundCombo);
+
+  connect(m_width, &SizeControl::valueChanged, this, &ScaleControl::scaleSettingsChanged);
+  connect(m_height, &SizeControl::valueChanged, this, &ScaleControl::scaleSettingsChanged);
+  connect(m_combo, &QComboBox::currentIndexChanged, this, &ScaleControl::scaleSettingsChanged);
 
   connect(m_width, &SizeControl::valueChanged, this, &ScaleControl::widthChanged);
   connect(m_height, &SizeControl::valueChanged, this, &ScaleControl::heightChanged);
+
   connect(m_combo, &QComboBox::currentIndexChanged, this, &ScaleControl::currentIndexChanged);
   connect(m_combo, &QComboBox::currentTextChanged, this, &ScaleControl::currentTextChanged);
+
+  connect(m_roundCombo, &QComboBox::currentIndexChanged, this, [this](int) {
+    RoundMode mode = m_roundCombo->currentData().value<RoundMode>();
+    emit roundModeChanged(mode);
+  });
 }
+
+// ----------------------------------------------------------------------------------------------
+// Title
+// ----------------------------------------------------------------------------------------------
+
+QString ScaleControl::title() const {
+  return m_label->text();
+}
+
+// ----------------------------------------------------------------------------------------------
+// ComboBox
+// ----------------------------------------------------------------------------------------------
+
+void ScaleControl::addItem(const QString& text, const QVariant& userData) {
+  m_combo->addItem(text, userData);
+}
+
+QVariant ScaleControl::currentData(int role) const {
+  return m_combo->currentData();
+}
+
+int ScaleControl::currentIndex() const {
+  return m_combo->currentIndex();
+}
+
+QString ScaleControl::currentText() const {
+  return m_combo->currentText();
+}
+
+void ScaleControl::hideComboBox() {
+  m_combo->hide();
+}
+void ScaleControl::showComboBox() {
+  m_combo->show();
+}
+
+// ----------------------------------------------------------------------------------------------
+// Width
+// ----------------------------------------------------------------------------------------------
 
 void ScaleControl::setWidthMinimum(int value) {
   m_width->setMinimum(value);
 }
 int ScaleControl::widthMinimum() const {
   return m_width->minimum();
-}
-
-void ScaleControl::setHeightMinimum(int value) {
-  m_height->setMinimum(value);
-}
-int ScaleControl::heightMinimum() const {
-  return m_height->minimum();
 }
 
 void ScaleControl::setWidthMaximum(int value) {
@@ -75,6 +131,36 @@ int ScaleControl::widthMaximum() const {
   return m_width->maximum();
 }
 
+QSize ScaleControl::scaleRange() {
+  return QSize(widthMaximum(), heightmaximum());
+}
+
+int ScaleControl::widthValue() const {
+  return m_width->value();
+}
+
+QSize ScaleControl::scaleSize() const {
+  return QSize(widthValue(), heightValue());
+}
+
+void ScaleControl::hideWidth() {
+  m_width->hide();
+}
+void ScaleControl::showWidth() {
+  m_width->show();
+}
+
+// ----------------------------------------------------------------------------------------------
+// Height
+// ----------------------------------------------------------------------------------------------
+
+void ScaleControl::setHeightMinimum(int value) {
+  m_height->setMinimum(value);
+}
+int ScaleControl::heightMinimum() const {
+  return m_height->minimum();
+}
+
 void ScaleControl::setHeightMaximum(int value) {
   m_height->setMaximum(value);
 }
@@ -82,56 +168,93 @@ int ScaleControl::heightmaximum() const {
   return m_height->maximum();
 }
 
-void ScaleControl::hideWidth() {
-  m_width->hide();
-}
-void ScaleControl::hideHeight() {
-  m_height->hide();
-}
-void ScaleControl::hideComboBox() {
-  m_combo->hide();
-}
-
-void ScaleControl::showWidth() {
-  m_width->show();
-}
-void ScaleControl::showHeight() {
-  m_height->show();
-}
-void ScaleControl::showComboBox() {
-  m_combo->show();
-}
-
-int ScaleControl::widthValue() const {
-  return m_width->value();
-}
-
 int ScaleControl::heightValue() const {
   return m_height->value();
 }
 
-QString ScaleControl::title() const {
-  return m_label->text();
+void ScaleControl::hideHeight() {
+  m_height->hide();
+}
+void ScaleControl::showHeight() {
+  m_height->show();
 }
 
-void ScaleControl::setWidth(int value) {
-  m_width->setValue(value);
-}
-void ScaleControl::setHeight(int value) {
-  m_height->setValue(value);
+// ----------------------------------------------------------------------------------------------
+// Round mode
+// ----------------------------------------------------------------------------------------------
+
+RoundMode ScaleControl::currentRoundMode() const {
+  return m_roundCombo->currentData().value<RoundMode>();
 }
 
-void ScaleControl::setWidthRange(int min, int max) {
-  m_width->setRange(min, max);
+void ScaleControl::hideRoundMode() {
+  m_roundLabel->hide();
+  m_roundCombo->hide();
 }
-void ScaleControl::setHeightRange(int min, int max) {
-  m_height->setRange(min, max);
+
+void ScaleControl::showRoundMode() {
+  m_roundLabel->show();
+  m_roundCombo->show();
+}
+
+// ----------------------------------------------------------------------------------------------
+// Slots Title
+// ----------------------------------------------------------------------------------------------
+
+void ScaleControl::setTitle(const QString& text) {
+  m_label->setText(text);
+}
+
+// ----------------------------------------------------------------------------------------------
+// Slots ComboBox
+// ----------------------------------------------------------------------------------------------
+
+void ScaleControl::clear() {
+  m_combo->clear();
 }
 
 void ScaleControl::setCurrentIndex(int index) {
   m_combo->setCurrentIndex(index);
 }
 
-void ScaleControl::setTitle(const QString& text) {
-  m_label->setText(text);
+// ----------------------------------------------------------------------------------------------
+// Slots Width / Height
+// ----------------------------------------------------------------------------------------------
+
+void ScaleControl::setWidth(int value) {
+  m_width->setValue(value);
+}
+
+void ScaleControl::setWidthRange(int min, int max) {
+  m_width->setRange(min, max);
+}
+
+void ScaleControl::setWidthEnabled(bool value) {
+  m_width->setEnabled(value);
+}
+
+void ScaleControl::setHeight(int value) {
+  m_height->setValue(value);
+}
+
+void ScaleControl::setHeightRange(int min, int max) {
+  m_height->setRange(min, max);
+}
+
+void ScaleControl::setHeightEnabled(bool value) {
+  m_height->setEnabled(value);
+}
+
+void ScaleControl::setScaleSize(QSize size) {
+  setWidth(size.width());
+  setHeight(size.height());
+}
+
+void ScaleControl::setScaleRange(QSize size) {
+  setWidthMaximum(size.width());
+  setHeightMaximum(size.height());
+}
+
+void ScaleControl::setCurrentRoundMode(RoundMode mode) {
+  m_roundCombo->setCurrentIndex(m_roundCombo->findData(QVariant::fromValue(mode)));
 }

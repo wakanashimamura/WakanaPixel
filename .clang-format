@@ -7,6 +7,13 @@ TabWidth: 2
 UseTab: Never
 ContinuationIndentWidth: 4
 
+BinPackArguments: false
+BinPackParameters: false
+
+AllowAllArgumentsOnNextLine: false
+
+AlignAfterOpenBracket: BlockIndent
+
 ColumnLimit: 100
 
 PointerAlignment: Left

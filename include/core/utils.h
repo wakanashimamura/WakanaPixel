@@ -27,6 +27,8 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
+#include <QSize>
+
 #include <cmath>
 #include <cstdint>
 
@@ -69,6 +71,14 @@ enum class RoundMode { Floor, Round, Ceil };
 
 [[nodiscard]] inline double cube(double value) {
   return value * value * value;
+}
+
+[[nodiscard]] inline bool isOutOfBounds(QSize imageSize, QSize boundsSize) {
+  return imageSize.width() > boundsSize.width() || imageSize.height() > boundsSize.height();
+}
+
+[[nodiscard]] inline bool isPortrait(QSize imageSize) {
+  return imageSize.height() >= imageSize.width();
 }
 
 #endif  // !UTILS_H_

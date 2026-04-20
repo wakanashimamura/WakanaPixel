@@ -23,11 +23,52 @@
 //
 // ================================================================================================
 
-#ifndef PIXELART_PIPELINE_H_
-#define PIXELART_PIPELINE_H_
+#ifndef CROP_CONTROL_H_
+#define CROP_CONTROL_H_
 
-#include "QImage"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QSlider>
+#include <QVBoxLayout>
+#include <QWidget>
 
-QImage pixelart(const QImage& image);
+enum class CropMode;
 
-#endif  // !PIXELART_PIPELINE_H_
+class CropControl : public QWidget {
+  Q_OBJECT
+
+ public:
+  explicit CropControl(QWidget* parent = nullptr);
+
+  void setTopSpacing(int spacing);
+  void setMainSpacing(int spacing);
+
+  void setTopMargins(int left, int top, int right, int bottom);
+  void setMainMargins(int left, int top, int right, int bottom);
+
+  void setMinimum(int value);
+  int minimum() const;
+
+  void setMaximum(int value);
+  int maximum() const;
+
+  int value() const;
+
+  void setMode(CropMode mode);
+ public slots:
+  void setValue(int value);
+  void setRange(int min, int max);
+
+ signals:
+  void valueChanged(int value);
+
+ private:
+  QSlider* m_slider;
+  QLabel* m_labelLeft;
+  QLabel* m_labelRight;
+
+  QHBoxLayout* m_hLayout;
+  QVBoxLayout* m_vLayout;
+};
+
+#endif  // !CROP_CONTROL_H_

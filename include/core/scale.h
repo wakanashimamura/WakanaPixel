@@ -31,17 +31,44 @@
 #include <QImage>
 #include <QSize>
 
-struct ScaleParams {
-  QSize size;
-  RoundMode mode = RoundMode::Round;
+struct DownScaleData;
+
+enum class ResizeMode { Fit, Crop };
+enum class CropMode { Horizontal, Vertical };
+
+struct DownScaleConfig {
+  QSize targetSize;
+  QSize range;
+  bool widthEnabled{};
+  bool heightEnabled{};
+  bool ResizeModeDisabled{};
 };
 
-// Fits the image size into a rectangle of the given dimensions while preserving the aspect ratio.
-// If the image already fits within the rectangle, it simply returns the original image size.
-QSize fitImageToScreen(QSize imageSize, QSize screenSize);
+struct CropGeometry {
+  QSize size;
+  int maxPosition;
+  CropMode mode;
+};
 
-QImage scale(const QImage& image, const ScaleParams& params);
+QSize calcScaledSize(const QSize& imageSize, const QSize& screenSize);
+
+QSize calcWidthFromHeight(const QSize& imageSize, int height);
+QSize calcHeightFromWidth(const QSize& imageSize, int width);
+
+QImage scale(const QImage& image, QSize size, RoundMode mode = RoundMode::Round);
 
 QImage upScale(const QImage& image, int factor);
+
+DownScaleConfig buildDownScaleConfig(
+    DownScaleData& data, const QSize& imageSize, const QSize& screenSize, const QSize& currentScale
+);
+
+CropGeometry computeCropGeometry(QSize imageSize, QSize screenSize);
+
+QImage fitImage(const QImage& image, QSize screenSize, RoundMode mode = RoundMode::Round);
+
+QImage cropImage(
+    const QImage& image, QSize screenSize, int position, RoundMode mode = RoundMode::Round
+);
 
 #endif  // !NEAREST_NEIGHBOR_SCALE_H_

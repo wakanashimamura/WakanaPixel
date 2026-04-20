@@ -180,8 +180,9 @@ void Palette::setPalette(const RGBColorsType& colors, bool labEnabled) {
   }
 }
 
-void Palette::setPaletteWithName(const std::string& name, const RGBColorsType& colors,
-                                 bool labEnabled) {
+void Palette::setPaletteWithName(
+    const std::string& name, const RGBColorsType& colors, bool labEnabled
+) {
   m_name = name;
   setPalette(colors, labEnabled);
 }

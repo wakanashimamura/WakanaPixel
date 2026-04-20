@@ -56,8 +56,9 @@ class PixelBits {
 
   explicit PixelBits(ImageRef image) { setImage(image); }
 
-  template <AccessMode OtherMode,
-            typename = std::enable_if_t<kIsReadOnly && OtherMode == AccessMode::ReadWrite>>
+  template <
+      AccessMode OtherMode,
+      typename = std::enable_if_t<kIsReadOnly && OtherMode == AccessMode::ReadWrite>>
   PixelBits(const PixelBits<OtherMode>& other)
       : m_image(other.m_image),
         m_bits(other.m_bits),
@@ -90,9 +91,11 @@ class PixelBits {
       return;
     }
 
-    Q_ASSERT_X(image.format() == QImage::Format_RGB32 || image.format() == QImage::Format_ARGB32,
-               "BasePixelBits::setImage",
-               "Unsupported pixel format - pixel access will be incorrect");
+    Q_ASSERT_X(
+        image.format() == QImage::Format_RGB32 || image.format() == QImage::Format_ARGB32,
+        "BasePixelBits::setImage",
+        "Unsupported pixel format - pixel access will be incorrect"
+    );
 
     m_image        = &image;
     m_bits         = image.bits();

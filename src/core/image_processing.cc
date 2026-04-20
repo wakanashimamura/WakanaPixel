@@ -23,48 +23,38 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#include "core/image_processing.h"
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/resize_mode_control.h"
-#include "ui/scale_control.h"
+QImage preprocessImage(
+    QImage image,
+    QSize size,
+    RoundMode mode,
+    DownScaleMode scaleMode,
+    ResizeMode resizeMode,
+    int position
+) {
+  QImage result;
 
-#include <QMainWindow>
+  switch (scaleMode) {
+    case DownScaleMode::Original:
+    case DownScaleMode::Custom:
+    case DownScaleMode::Width:
+    case DownScaleMode::Height:
+      result = scale(image, size, mode);
+      break;
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
+    case DownScaleMode::CustomCanvas:
+    case DownScaleMode::Preset:
+      if (resizeMode == ResizeMode::Fit) {
+        result = fitImage(image, size, mode);
+      } else {
+        result = cropImage(image, size, position, mode);
+      }
+      break;
+
+    default:
+      break;
+  }
+
+  return result;
 }
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
-  Q_OBJECT
-
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
-
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
-
-  void onPlatformChanged();
-
-  void onDownScaleControlChanged();
-  void onPreprocess();
-
- private:
-  void updateDonwScale();
-
-  Ui::MainWindow* m_ui;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl       = nullptr;
-  ResizeModeControl* m_resizeModeControl = nullptr;
-};
-#endif  // MAIN_WINDOW_H
