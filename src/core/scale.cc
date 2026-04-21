@@ -161,7 +161,7 @@ CropGeometry computeCropGeometry(QSize imageSize, QSize screenSize) {
                         : calcWidthFromHeight(imageSize, screenSize.height());
 
   // Scale along the other axis if the image does not fill the screen
-  if (size.height() < screenSize.height()) {
+  if (portrait ? size.height() < screenSize.height() : size.width() < screenSize.width()) {
     size = portrait ? calcWidthFromHeight(imageSize, screenSize.height())
                     : calcHeightFromWidth(imageSize, screenSize.width());
 
