@@ -54,9 +54,9 @@ class Platform {
         m_screenSize(screenSize),
         m_downScaleData(downScaleData) {}
 
-  QString name() const { return m_name; }
-  QSize screenSize() const { return m_screenSize; }
-  const std::vector<DownScaleData>& downScaleData() const { return m_downScaleData; }
+  [[nodiscard]] QString name() const { return m_name; }
+  [[nodiscard]] QSize screenSize() const { return m_screenSize; }
+  [[nodiscard]] const std::vector<DownScaleData>& downScaleData() const { return m_downScaleData; }
 
  private:
   QString m_name;

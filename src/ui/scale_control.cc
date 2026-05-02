@@ -32,15 +32,13 @@
 // ----------------------------------------------------------------------------------------------
 
 ScaleControl::ScaleControl(QWidget* parent)
-    : QWidget(parent) {
-  m_label      = new QLabel(this);
-  m_combo      = new QComboBox(this);
-  m_width      = new SizeControl(this);
-  m_height     = new SizeControl(this);
-  m_roundLabel = new QLabel(this);
-  m_roundCombo = new QComboBox(this);
-
-  m_label->setText("Scale");
+    : QGroupBox(parent) {
+  m_combo         = new QComboBox(this);
+  m_width         = new SizeControl(this);
+  m_height        = new SizeControl(this);
+  m_roundLabel    = new QLabel(this);
+  m_roundCombo    = new QComboBox(this);
+  m_resizeControl = new ResizeModeControl(this);
 
   m_width->setText("Width");
   m_height->setText("Height");
@@ -52,38 +50,53 @@ ScaleControl::ScaleControl(QWidget* parent)
   setCurrentRoundMode(RoundMode::Round);
 
   QVBoxLayout* layout = new QVBoxLayout(this);
-  layout->setSpacing(6);
-  layout->setContentsMargins(0, 0, 0, 0);
 
-  layout->addWidget(m_label);
   layout->addWidget(m_combo);
   layout->addWidget(m_width);
   layout->addWidget(m_height);
   layout->addWidget(m_roundLabel);
   layout->addWidget(m_roundCombo);
+  layout->addWidget(m_resizeControl);
 
-  connect(m_width, &SizeControl::valueChanged, this, &ScaleControl::scaleSettingsChanged);
-  connect(m_height, &SizeControl::valueChanged, this, &ScaleControl::scaleSettingsChanged);
-  connect(m_combo, &QComboBox::currentIndexChanged, this, &ScaleControl::scaleSettingsChanged);
+  // m_width / m_height
 
-  connect(m_width, &SizeControl::valueChanged, this, &ScaleControl::widthChanged);
-  connect(m_height, &SizeControl::valueChanged, this, &ScaleControl::heightChanged);
+  connect(m_width, &SizeControl::valueChanged, this, [this](int value) {
+    emit widthChanged(value);
+    emit settingsChanged();
+  });
 
-  connect(m_combo, &QComboBox::currentIndexChanged, this, &ScaleControl::currentIndexChanged);
+  connect(m_height, &SizeControl::valueChanged, this, [this](int value) {
+    emit heightChanged(value);
+    emit settingsChanged();
+  });
+
+  // m_combo
+
+  connect(m_combo, &QComboBox::currentIndexChanged, this, [this](int index) {
+    emit currentIndexChanged(index);
+    emit settingsChanged();
+  });
   connect(m_combo, &QComboBox::currentTextChanged, this, &ScaleControl::currentTextChanged);
 
-  connect(m_roundCombo, &QComboBox::currentIndexChanged, this, [this](int) {
+  // m_roundCombo
+
+  connect(m_roundCombo, &QComboBox::currentIndexChanged, this, [this]() {
     RoundMode mode = m_roundCombo->currentData().value<RoundMode>();
     emit roundModeChanged(mode);
+    emit settingsChanged();
   });
-}
 
-// ----------------------------------------------------------------------------------------------
-// Title
-// ----------------------------------------------------------------------------------------------
+  // m_resizeControl
 
-QString ScaleControl::title() const {
-  return m_label->text();
+  connect(m_resizeControl, &ResizeModeControl::resizeModeChanged, this, [this](ResizeMode mode) {
+    emit resizeModeChanged(mode);
+    emit settingsChanged();
+  });
+
+  connect(m_resizeControl, &ResizeModeControl::valueChanged, this, [this](int value) {
+    emit resizeCropValueChanged(value);
+    emit settingsChanged();
+  });
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -198,11 +211,47 @@ void ScaleControl::showRoundMode() {
 }
 
 // ----------------------------------------------------------------------------------------------
-// Slots Title
+// Resize mode
 // ----------------------------------------------------------------------------------------------
 
-void ScaleControl::setTitle(const QString& text) {
-  m_label->setText(text);
+ResizeMode ScaleControl::currentResizeMode() const {
+  return m_resizeControl->currentResizeMode();
+}
+
+int ScaleControl::resizeCropValue() {
+  return m_resizeControl->value();
+}
+
+void ScaleControl::setResizeCropMode(CropMode mode) {
+  m_resizeControl->setCropMode(mode);
+}
+
+void ScaleControl::setResizeControlDisabled(bool value) {
+  m_resizeControl->setResizeDisabled(value);
+}
+
+void ScaleControl::hideCropControl() {
+  m_resizeControl->hideCropControl();
+}
+
+void ScaleControl::showCropControl() {
+  m_resizeControl->showCropControl();
+}
+
+void ScaleControl::setResizeMinimum(int value) {
+  m_resizeControl->setMinimum(value);
+}
+
+int ScaleControl::resizeMinimum() const {
+  return m_resizeControl->minimum();
+}
+
+void ScaleControl::setResizeMaximum(int value) {
+  m_resizeControl->setMaximum(value);
+}
+
+int ScaleControl::resizeMaximum() const {
+  return m_resizeControl->maximum();
 }
 
 // ----------------------------------------------------------------------------------------------
@@ -257,4 +306,16 @@ void ScaleControl::setScaleRange(QSize size) {
 
 void ScaleControl::setCurrentRoundMode(RoundMode mode) {
   m_roundCombo->setCurrentIndex(m_roundCombo->findData(QVariant::fromValue(mode)));
+}
+
+// ----------------------------------------------------------------------------------------------
+// Resize mode
+// ----------------------------------------------------------------------------------------------
+
+void ScaleControl::setCurrentResizeMode(ResizeMode mode) {
+  m_resizeControl->setCurrentResizeMode(mode);
+}
+
+void ScaleControl::setResizeCropValue(int value) {
+  m_resizeControl->setValue(value);
 }

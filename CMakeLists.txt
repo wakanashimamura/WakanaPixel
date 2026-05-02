@@ -28,6 +28,8 @@ set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
 set(SOURCES
   src/main.cc
 
+  src/core/algorithm_factory.cc
+  src/core/dithering.cc
   src/core/image_processing.cc
   src/core/scale.cc
 
@@ -36,19 +38,25 @@ set(SOURCES
   src/model/settings.cc
 
   src/ui/crop_control.cc
+  src/ui/dithering_settings_control.cc
   src/ui/graphics_view.cc
   src/ui/main_window.cc
+  src/ui/quantization_control.cc
   src/ui/resize_mode_control.cc
   src/ui/scale_control.cc
+  src/ui/settings_panel_controller.cc
   src/ui/size_control.cc
 )
 
 set(HEADER
   include/ui/crop_control.h
+  include/ui/dithering_settings_control.h
   include/ui/graphics_view.h
   include/ui/main_window.h
+  include/ui/quantization_control.h
   include/ui/resize_mode_control.h
   include/ui/scale_control.h
+  include/ui/settings_panel_controller.h
   include/ui/size_control.h
 )
 

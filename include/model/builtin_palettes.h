@@ -24,16 +24,14 @@
 // ================================================================================================
 // clang-format off
 
-#ifndef DEFAULT_PALETTE_H_
-#define DEFAULT_PALETTE_H_
+#ifndef BUILTIN_PALETTES_H_
+#define BUILTIN_PALETTES_H_
 
 #include "model/palette.h"
 
-#include <algorithm>
-#include <unordered_set>
 #include <vector>
 
-const std::vector<Palette> createDefaultPalettes() {
+inline const std::vector<Palette> createDefaultPalettes() {
   std::vector<Palette> palettes;
 
   palettes.emplace_back(
@@ -649,39 +647,9 @@ const std::vector<Palette> createDefaultPalettes() {
       0xFFB59E90 
     }
   );
-
-    palettes.emplace_back(
-    "Bastille-8 Palette", 
-    Palette::RGBColorsType {
-      0xFF181923,
-      0xFF292D41,
-      0xFF38405D,
-      0xFF4C546D,
-      0xFF6F687A,
-      0xFF8B7983,
-      0xFFA58D89,
-      0xFFB59E90 
-    }
-  );
-
-  // ----------------------------------------------------------------------------------------------
-  // ==============================================================================================
-  // ----------------------------------------------------------------------------------------------
-
-  #ifdef QT_DEBUG
-    std::unordered_set<std::string> uniqueNames;
-    for (const auto& palette : palettes) {
-      if (!uniqueNames.insert(palette.name()).second) {
-        Q_ASSERT_X(false, "createDefaultPalettes", "The default palette name is duplicated");
-      }
-    }
-  #endif
-
-  std::sort(palettes.begin(), palettes.end(),
-    [](const Palette& a, const Palette& b) { return a.name() < b.name(); 
-  });
-
   return palettes;
 }
 
-#endif  // !DEFAULT_PALETTE_H_
+inline const std::vector<Palette> kBuiltinPalettes = createDefaultPalettes();
+
+#endif  // !BUILTIN_PALETTES_H_

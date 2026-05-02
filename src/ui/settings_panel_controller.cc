@@ -23,55 +23,44 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#include "ui/settings_panel_controller.h"
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
-
-#include <QMainWindow>
-#include <QStackedWidget>
-
-class Dither;
-class AlgorithmFactory;
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
+SettingsPanelController::SettingsPanelController(QWidget* parent)
+    : QWidget(parent) {
+  m_layout = new QVBoxLayout(this);
+  m_layout->setSpacing(0);
+  m_layout->setContentsMargins(0, 0, 0, 0);
 }
-QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+void SettingsPanelController::addWidget(QWidget* widget) {
+  if (widget) {
+    m_settingsWidget.push_back(widget);
+  }
+}
 
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+int SettingsPanelController::currentIndex() const {
+  if (m_settingsWidget.empty()) {
+    return -1;
+  }
 
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
+  return m_currentIndex;
+}
 
-  void onPlatformChanged();
+void SettingsPanelController::setWidget(int index) {
+  m_layout->addWidget(m_settingsWidget[index]);
+  m_settingsWidget[index]->show();
+}
 
-  void onDownScaleControlChanged();
-  void onProcess();
+void SettingsPanelController::removeWidget(int index) {
+  m_layout->removeWidget(m_settingsWidget[index]);
+  m_settingsWidget[index]->hide();
+}
 
- private:
-  void updateDonwScale();
-  void preprocess();
+void SettingsPanelController::setCurrentIndex(int index) {
+  if (!m_settingsWidget.empty() && index < m_settingsWidget.size()) {
+    removeWidget(m_currentIndex);
+    setWidget(index);
 
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
-};
-
-#endif  // !MAIN_WINDOW_H
+    m_currentIndex = index;
+  }
+}

@@ -23,55 +23,47 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef QUANTIZATION_CONTROL_H_
+#define QUANTIZATION_CONTROL_H_
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
+#include "ui/settings_panel_controller.h"
 
-#include <QMainWindow>
+#include <QComboBox>
+#include <QGroupBox>
+#include <QLabel>
 #include <QStackedWidget>
+#include <QVariant>
+#include <QVBoxLayout>
 
-class Dither;
-class AlgorithmFactory;
+enum class DitheringAlgorithm;
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
+class QuantizationControl : public QGroupBox {
   Q_OBJECT
-
  public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+  explicit QuantizationControl(QWidget* parent = nullptr);
 
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
+  int currentPaletteIndex() const;
 
-  void onPlatformChanged();
+  void addDithering(const QString& text, QWidget* widget, DitheringAlgorithm id);
+  DitheringAlgorithm currentDitheringId() const;
+  int currentDitheringIndex() const;
 
-  void onDownScaleControlChanged();
-  void onProcess();
+ public slots:
+
+  void setDitheringIndex(int index);
+
+ signals:
+
+  void settingsChanged();
 
  private:
-  void updateDonwScale();
-  void preprocess();
+  QVBoxLayout* layout;
+  QLabel* m_palettesLabel;
+  QComboBox* m_palettesCombo;
 
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
+  QLabel* m_ditheringLabel;
+  QComboBox* m_ditheringComboBox;
+  SettingsPanelController* m_ditheringSettingsPanel;
 };
 
-#endif  // !MAIN_WINDOW_H
+#endif  // !QUANTIZATION_CONTROL_H_

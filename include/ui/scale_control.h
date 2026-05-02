@@ -23,18 +23,19 @@
 //
 // ================================================================================================
 
-#ifndef SCALE_CONTROL_WIDGE_H_
-#define SCALE_CONTROL_WIDGE_H_
+#ifndef SCALE_CONTROL_H_
+#define SCALE_CONTROL_H_
 
 #include "core/utils.h"
+#include "ui/resize_mode_control.h"
 #include "ui/size_control.h"
 
 #include <QComboBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QVariant>
-#include <QWidget>
 
-class ScaleControl : public QWidget {
+class ScaleControl : public QGroupBox {
   Q_OBJECT
 
  public:
@@ -43,12 +44,6 @@ class ScaleControl : public QWidget {
   // ----------------------------------------------------------------------------------------------
 
   explicit ScaleControl(QWidget* parent = nullptr);
-
-  // ----------------------------------------------------------------------------------------------
-  // Title
-  // ----------------------------------------------------------------------------------------------
-
-  QString title() const;
 
   // ----------------------------------------------------------------------------------------------
   // ComboBox
@@ -104,13 +99,26 @@ class ScaleControl : public QWidget {
   void hideRoundMode();
   void showRoundMode();
 
+  // ----------------------------------------------------------------------------------------------
+  // Resize mode
+  // ----------------------------------------------------------------------------------------------
+
+  ResizeMode currentResizeMode() const;
+  int resizeCropValue();
+
+  void setResizeCropMode(CropMode mode);
+
+  void setResizeControlDisabled(bool value);
+  void hideCropControl();
+  void showCropControl();
+
+  void setResizeMinimum(int value);
+  int resizeMinimum() const;
+
+  void setResizeMaximum(int value);
+  int resizeMaximum() const;
+
  public slots:
-
-  // ----------------------------------------------------------------------------------------------
-  // Title
-  // ----------------------------------------------------------------------------------------------
-
-  void setTitle(const QString& text);
 
   // ----------------------------------------------------------------------------------------------
   // ComboBox
@@ -140,13 +148,21 @@ class ScaleControl : public QWidget {
 
   void setCurrentRoundMode(RoundMode mode);
 
+  // ----------------------------------------------------------------------------------------------
+  // Resize mode
+  // ----------------------------------------------------------------------------------------------
+
+  void setCurrentResizeMode(ResizeMode mode);
+  void setResizeCropValue(int value);
+
  signals:
 
-  void scaleSettingsChanged();
+  void settingsChanged();
 
   // ----------------------------------------------------------------------------------------------
   // ComboBox
   // ----------------------------------------------------------------------------------------------
+
   void currentIndexChanged(int index);
   void currentTextChanged(const QString& text);
 
@@ -163,13 +179,20 @@ class ScaleControl : public QWidget {
 
   void roundModeChanged(RoundMode mode);
 
+  // ----------------------------------------------------------------------------------------------
+  // Resize mode
+  // ----------------------------------------------------------------------------------------------
+
+  void resizeModeChanged(ResizeMode mode);
+  void resizeCropValueChanged(int value);
+
  private:
-  QLabel* m_label;
-  QComboBox* m_combo;
-  SizeControl* m_width;
-  SizeControl* m_height;
-  QLabel* m_roundLabel;
-  QComboBox* m_roundCombo;
+  QComboBox* m_combo                 = nullptr;
+  SizeControl* m_width               = nullptr;
+  SizeControl* m_height              = nullptr;
+  QLabel* m_roundLabel               = nullptr;
+  QComboBox* m_roundCombo            = nullptr;
+  ResizeModeControl* m_resizeControl = nullptr;
 };
 
-#endif  // !SCALE_CONTROL_WIDGE_H_
+#endif  // !SCALE_CONTROL_H_

@@ -27,6 +27,8 @@
 
 #include "core/scale.h"
 
+#include <QVBoxLayout>
+
 ResizeModeControl::ResizeModeControl(QWidget* parent)
     : QWidget(parent) {
   m_label       = new QLabel("Resize Mode", this);
@@ -59,6 +61,14 @@ ResizeModeControl::ResizeModeControl(QWidget* parent)
     }
     emit resizeModeChanged(mode);
   });
+}
+
+void ResizeModeControl::setResizeDisabled(bool value) {
+  if (value) {
+    setCurrentResizeMode(ResizeMode::Fit);
+  }
+
+  setDisabled(value);
 }
 
 ResizeMode ResizeModeControl::currentResizeMode() const {

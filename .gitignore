@@ -1,12 +1,17 @@
 # Visual Studio
 .vs/
+.vscode/
 
 # Qt Creator
-.qtcreator
-build
+.qtcreator/
+
+# Build folders
+build/
+cmake-build-*/
+out/
+Debug/
+Release/
 
 # CMake 
-out/
 CMakePresets.json
 CMakeUserPresets.json
-

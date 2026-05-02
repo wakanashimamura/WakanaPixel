@@ -29,11 +29,15 @@
 #include <QImage>
 #include <QSize>
 
-QImage preprocessImage(
-    QImage image,
+class IDithering;
+
+[[nodiscard]] QImage preprocessImage(
+    const QImage& image,
     QSize size,
     RoundMode mode,
     DownScaleMode scaleMode,
     ResizeMode resizeMode,
     int position
 );
+
+[[nodiscard]] QImage processImage(const QImage& image, int indexBuiltPalette, IDithering& dither);

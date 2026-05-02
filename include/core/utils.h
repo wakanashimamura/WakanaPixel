@@ -43,7 +43,7 @@ enum class RoundMode { Floor, Round, Ceil };
     case RoundMode::Ceil:
       return static_cast<int>(std::ceil(value));
     default:
-      return value;
+      return static_cast<int>(value);
   }
 }
 
@@ -73,11 +73,11 @@ enum class RoundMode { Floor, Round, Ceil };
   return value * value * value;
 }
 
-[[nodiscard]] inline bool isOutOfBounds(QSize imageSize, QSize boundsSize) {
+[[nodiscard]] inline bool isOutOfBounds(const QSize& imageSize, const QSize& boundsSize) {
   return imageSize.width() > boundsSize.width() || imageSize.height() > boundsSize.height();
 }
 
-[[nodiscard]] inline bool isPortrait(QSize imageSize) {
+[[nodiscard]] inline bool isPortrait(const QSize& imageSize) {
   return imageSize.height() >= imageSize.width();
 }
 

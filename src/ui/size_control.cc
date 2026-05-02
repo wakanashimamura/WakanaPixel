@@ -25,6 +25,9 @@
 
 #include "ui/size_control.h"
 
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
 SizeControl::SizeControl(QWidget* parent)
     : QWidget(parent) {
   m_slider  = new QSlider(Qt::Horizontal, this);
@@ -35,20 +38,20 @@ SizeControl::SizeControl(QWidget* parent)
   setRange(0, 100);
 
   // Layout Top
-  m_hLayout = new QHBoxLayout();
+  QHBoxLayout* m_hLayout = new QHBoxLayout();
   m_hLayout->addWidget(m_label);
   m_hLayout->addWidget(m_spinBox);
 
-  setTopSpacing(0);
-  setTopMargins(0, 0, 0, 0);
+  m_hLayout->setSpacing(0);
+  m_hLayout->setContentsMargins(0, 0, 0, 0);
 
   // Layout Main
-  m_vLayout = new QVBoxLayout(this);
+  QVBoxLayout* m_vLayout = new QVBoxLayout(this);
   m_vLayout->addLayout(m_hLayout);
   m_vLayout->addWidget(m_slider);
 
-  setMainSpacing(6);
-  setMainMargins(0, 0, 0, 0);
+  m_vLayout->setSpacing(6);
+  m_vLayout->setContentsMargins(0, 0, 0, 0);
 
   setLayout(m_vLayout);
 
@@ -56,21 +59,6 @@ SizeControl::SizeControl(QWidget* parent)
   connect(m_spinBox, &QSpinBox::valueChanged, m_slider, &QSlider::setValue);
 
   connect(m_slider, &QSlider::valueChanged, this, &SizeControl::valueChanged);
-}
-
-void SizeControl::setTopSpacing(int spacing) {
-  m_hLayout->setSpacing(spacing);
-}
-void SizeControl::setMainSpacing(int spacing) {
-  m_vLayout->setSpacing(spacing);
-}
-
-void SizeControl::setTopMargins(int left, int top, int right, int bottom) {
-  m_hLayout->setContentsMargins(left, top, right, bottom);
-}
-
-void SizeControl::setMainMargins(int left, int top, int right, int bottom) {
-  m_vLayout->setContentsMargins(left, top, right, bottom);
 }
 
 void SizeControl::setMinimum(int value) {

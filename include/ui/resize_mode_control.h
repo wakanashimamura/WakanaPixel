@@ -30,7 +30,6 @@
 
 #include <QComboBox>
 #include <QLabel>
-#include <QVBoxLayout>
 #include <QWidget>
 
 enum class ResizeMode;
@@ -43,7 +42,9 @@ class ResizeModeControl : public QWidget {
   // Constructors
   // ----------------------------------------------------------------------------------------------
 
-  ResizeModeControl(QWidget* parent = nullptr);
+  explicit ResizeModeControl(QWidget* parent = nullptr);
+
+  void setResizeDisabled(bool value);
 
   // ----------------------------------------------------------------------------------------------
   // ComboBox
@@ -82,8 +83,6 @@ class ResizeModeControl : public QWidget {
   QLabel* m_label;
   QComboBox* m_combo;
   CropControl* m_cropControl;
-
-  QVBoxLayout* m_vLayout;
 };
 
 #endif  // !RESIZE_MODE_CONTROL_H_

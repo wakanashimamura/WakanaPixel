@@ -125,11 +125,11 @@ class PixelBits {
   [[nodiscard]] int bytesPerLine() const { return m_bytesPerLine; }
 
   [[nodiscard]] ImageRef image() { return *m_image; }
-  [[nodiscard]] const QImage* image() const { return m_image; }
+  [[nodiscard]] const QImage& image() const { return *m_image; }
 
  private:
-  template <bool>
-  friend class BasePixelBits;
+  template <AccessMode OtherMode>
+  friend class PixelBits;
 
   ImagePtr m_image           = nullptr;
   BytePtr m_bits             = nullptr;

@@ -25,6 +25,7 @@
 
 #include "ui/main_window.h"
 
+#include "core/algorithm_factory.h"
 #include "core/image_processing.h"
 #include "ui_main_window.h"
 
@@ -36,7 +37,8 @@
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
-      m_ui(new Ui::MainWindow) {
+      m_ui(new Ui::MainWindow),
+      m_algorithmFactory(AlgorithmFactory::create()) {
   m_ui->setupUi(this);
 
   // -------- Menu Bar --------
@@ -49,31 +51,44 @@ MainWindow::MainWindow(QWidget* parent)
   connect(m_ui->actionZoomOut,   &QAction::triggered, this, &MainWindow::onZoomOut);
   // clang-format on
 
+  // -------- -------- --------
+
+  QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(m_ui->scrollContents->layout());
+
   // -------- Down Scale --------
 
-  m_downScaleControl  = new ScaleControl(m_ui->scrollContents);
-  QVBoxLayout* layout = qobject_cast<QVBoxLayout*>(m_ui->scrollContents->layout());
+  m_downScaleControl = new ScaleControl(m_ui->scrollContents);
 
   layout->insertWidget(layout->indexOf(m_ui->verticalSpacer), m_downScaleControl);
   m_downScaleControl->setTitle("DOWN SCALE");
 
   connect(
       m_downScaleControl,
-      &ScaleControl::scaleSettingsChanged,
+      &ScaleControl::settingsChanged,
       this,
       &MainWindow::onDownScaleControlChanged
   );
 
-  connect(m_downScaleControl, &ScaleControl::roundModeChanged, this, &MainWindow::onPreprocess);
+  connect(m_downScaleControl, &ScaleControl::settingsChanged, this, &MainWindow::preprocess);
 
-  // -------- Resize Mode --------
+  // -------- QuantizationControl --------
 
-  m_resizeModeControl = new ResizeModeControl(m_ui->scrollContents);
+  m_quantizationControl = new QuantizationControl(m_ui->scrollContents);
+  layout->insertWidget(layout->indexOf(m_downScaleControl) + 1, m_quantizationControl);
 
-  layout->insertWidget(layout->indexOf(m_downScaleControl) + 1, m_resizeModeControl);
+  std::vector<DitheringAlgorithm> ditheringIds = m_algorithmFactory.availableDitheringAlgorithms();
 
-  connect(m_resizeModeControl, &ResizeModeControl::valueChanged, this, &MainWindow::onPreprocess);
-  connect(m_resizeModeControl, &ResizeModeControl::resizeModeChanged, this, &MainWindow::onPreprocess);
+  for (DitheringAlgorithm id : ditheringIds) {
+    IDithering& dithering = m_algorithmFactory.dithering(id);
+
+    QWidget* w = dithering.createSettingsWidget();
+    m_quantizationControl->addDithering(dithering.displayName(), w, dithering.id());
+  }
+  m_quantizationControl->setDitheringIndex(0);
+
+  connect(m_ui->btnPixelate, &QPushButton::clicked, this, &MainWindow::onProcess);
+
+  // -------- -------- --------
 
   onPlatformChanged();
 }
@@ -144,21 +159,34 @@ void MainWindow::onDownScaleControlChanged() {
   }
 
   updateDonwScale();
-  onPreprocess();
+  preprocess();
 }
 
-void MainWindow::onPreprocess() {
+void MainWindow::onProcess() {
+  if (!m_image) {
+    return;
+  }
+
+  m_image.setProcessed(processImage(
+      m_image.preprocess(),
+      m_quantizationControl->currentPaletteIndex(),
+      m_algorithmFactory.dithering(m_quantizationControl->currentDitheringId())
+  ));
+
+  m_ui->graphicsView->setImage(m_image.processed());
+}
+
+void MainWindow::preprocess() {
   DownScaleData data = m_downScaleControl->currentData().value<DownScaleData>();
   m_image.setPreprocess(preprocessImage(
       m_image.original(),
       m_downScaleControl->scaleSize(),
       m_downScaleControl->currentRoundMode(),
       data.mode,
-      m_resizeModeControl->currentResizeMode(),
-      m_resizeModeControl->value()
+      m_downScaleControl->currentResizeMode(),
+      m_downScaleControl->resizeCropValue()
   ));
 
-  m_image.setProcessed(m_image.preprocess());
   m_ui->graphicsView->setImage(m_image.preprocess());
 }
 
@@ -175,12 +203,12 @@ void MainWindow::updateDonwScale() {
   CropGeometry geometry =
       computeCropGeometry(m_image.originalSize(), m_downScaleControl->scaleSize());
 
-  m_resizeModeControl->setMaximum(geometry.maxPosition);
-  m_resizeModeControl->setCropMode(geometry.mode);
+  m_downScaleControl->setResizeMaximum(geometry.maxPosition);
+  m_downScaleControl->setResizeCropMode(geometry.mode);
 
   m_downScaleControl->setScaleRange(config.range);
   m_downScaleControl->setWidthEnabled(config.widthEnabled);
   m_downScaleControl->setHeightEnabled(config.heightEnabled);
   m_downScaleControl->setScaleSize(config.targetSize);
-  m_resizeModeControl->setHidden(config.ResizeModeDisabled);
+  m_downScaleControl->setResizeControlDisabled(config.resizeModeDisabled);
 }

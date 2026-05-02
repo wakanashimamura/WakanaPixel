@@ -65,7 +65,7 @@ QImage scale(const QImage& image, QSize size, RoundMode mode) {
     return QImage();
   }
 
-  QImage result(size.width(), size.height(), image.format());
+  QImage result(size, image.format());
 
   MutablePixelBits resultBits(result);
   ReadOnlyPixelBits imageBits(image);
@@ -109,7 +109,7 @@ DownScaleConfig buildDownScaleConfig(
   config.range              = screenSize;
   config.widthEnabled       = true;
   config.heightEnabled      = true;
-  config.ResizeModeDisabled = true;
+  config.resizeModeDisabled = true;
 
   switch (data.mode) {
     case DownScaleMode::Original:
@@ -123,7 +123,7 @@ DownScaleConfig buildDownScaleConfig(
       break;
 
     case DownScaleMode::CustomCanvas:
-      config.ResizeModeDisabled = false;
+      config.resizeModeDisabled = false;
       break;
 
     case DownScaleMode::Width:
@@ -143,7 +143,7 @@ DownScaleConfig buildDownScaleConfig(
     case DownScaleMode::Preset:
       config.widthEnabled       = false;
       config.heightEnabled      = false;
-      config.ResizeModeDisabled = false;
+      config.resizeModeDisabled = false;
       config.targetSize         = data.size;
       break;
 

@@ -23,55 +23,37 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef SETTINGS_PANEL_CONTROLLER_H_
+#define SETTINGS_PANEL_CONTROLLER_H_
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
+#include "core/utils.h"
+#include "ui/resize_mode_control.h"
+#include "ui/size_control.h"
 
-#include <QMainWindow>
-#include <QStackedWidget>
+#include <QVBoxLayout>
+#include <QWidget>
 
-class Dither;
-class AlgorithmFactory;
+#include <vector>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
+class SettingsPanelController : public QWidget {
   Q_OBJECT
-
  public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+  explicit SettingsPanelController(QWidget* parent = nullptr);
 
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
+  void addWidget(QWidget* widget);
+  int currentIndex() const;
 
-  void onPlatformChanged();
-
-  void onDownScaleControlChanged();
-  void onProcess();
+ public slots:
+  void setCurrentIndex(int index);
 
  private:
-  void updateDonwScale();
-  void preprocess();
+  void setWidget(int index);
+  void removeWidget(int index);
 
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
+  std::vector<QWidget*> m_settingsWidget;
+  int m_currentIndex = 0;
 
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
+  QVBoxLayout* m_layout;
 };
 
-#endif  // !MAIN_WINDOW_H
+#endif  // !SETTINGS_PANEL_CONTROLLER_H_

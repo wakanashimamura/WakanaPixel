@@ -29,7 +29,7 @@
 #include "color/lab.h"
 #include "color/rgb.h"
 
-#include <string>
+#include <QString>
 #include <vector>
 
 class Palette {
@@ -38,7 +38,7 @@ class Palette {
   // Enumerations
   // ----------------------------------------------------------------------------------------------
 
-  enum class ColorDistMode { RGB, WeightedRGB, Lab };
+  enum class ColorDistMode { RGB, WRGB, Lab };
 
   // ----------------------------------------------------------------------------------------------
   // Type aliases
@@ -51,9 +51,9 @@ class Palette {
   // Constructors
   // ----------------------------------------------------------------------------------------------
 
-  explicit Palette(const std::string& name = {});
+  explicit Palette(const QString& name = {});
   explicit Palette(const RGBColorsType& colors, bool labEnabled = true);
-  explicit Palette(const std::string& name, const RGBColorsType& colors, bool labEnabled = true);
+  explicit Palette(const QString& name, const RGBColorsType& colors, bool labEnabled = true);
 
   // ----------------------------------------------------------------------------------------------
   // Operators
@@ -86,13 +86,13 @@ class Palette {
 
   void setPalette(const RGBColorsType& colors);
   void setPalette(const RGBColorsType& colors, bool labEnabled);
-  void setPaletteWithName(const std::string& name, const RGBColorsType& colors, bool labEnabled);
+  void setPaletteWithName(const QString& name, const RGBColorsType& colors, bool labEnabled);
 
   // ----------------------------------------------------------------------------------------------
   // Getters
   // ----------------------------------------------------------------------------------------------
 
-  [[nodiscard]] const std::string& name() const { return m_name; }
+  [[nodiscard]] const QString& name() const { return m_name; }
   [[nodiscard]] const RGBColorsType& rgbPalette() const { return m_colors; }
   [[nodiscard]] const LabColorsType& labPalette() const { return m_labCache; }
 
@@ -104,7 +104,7 @@ class Palette {
   [[nodiscard]] size_t size() const { return m_colors.size(); }
 
  private:
-  std::string m_name;
+  QString m_name;
   RGBColorsType m_colors;
   LabColorsType m_labCache;
   bool m_labEnabled = false;

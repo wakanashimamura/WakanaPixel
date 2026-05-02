@@ -23,55 +23,30 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef ALGORITHM_FACTORY_H_
+#define ALGORITHM_FACTORY_H_
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
+#include "core/dithering.h"
 
-#include <QMainWindow>
-#include <QStackedWidget>
+#include <unordered_map>
+#include <vector>
 
-class Dither;
-class AlgorithmFactory;
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
-  Q_OBJECT
-
+class AlgorithmFactory {
  public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+  static AlgorithmFactory& create();
 
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
+  [[nodiscard]] IDithering& dithering(const DitheringAlgorithm& id) const;
+  [[nodiscard]] std::vector<DitheringAlgorithm> availableDitheringAlgorithms() const;
 
-  void onPlatformChanged();
-
-  void onDownScaleControlChanged();
-  void onProcess();
+  AlgorithmFactory(const AlgorithmFactory&)            = delete;
+  AlgorithmFactory& operator=(const AlgorithmFactory&) = delete;
 
  private:
-  void updateDonwScale();
-  void preprocess();
+  AlgorithmFactory();
 
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
+  void registerDithering(IDithering* ditheringPtr);
 
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
+  std::vector<IDithering*> m_ditheringAlgorithms;
 };
 
-#endif  // !MAIN_WINDOW_H
+#endif  // !ALGORITHM_FACTORY_H_

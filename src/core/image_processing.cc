@@ -25,8 +25,11 @@
 
 #include "core/image_processing.h"
 
+#include "core/dithering.h"
+#include "model/builtin_palettes.h"
+
 QImage preprocessImage(
-    QImage image,
+    const QImage& image,
     QSize size,
     RoundMode mode,
     DownScaleMode scaleMode,
@@ -55,6 +58,16 @@ QImage preprocessImage(
     default:
       break;
   }
+
+  return result;
+}
+
+QImage processImage(const QImage& image, int indexBuiltPalette, IDithering& dither) {
+  QImage result;
+
+  Palette palette = kBuiltinPalettes[indexBuiltPalette];
+
+  result = dither.apply(image, palette);
 
   return result;
 }

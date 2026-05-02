@@ -24,15 +24,13 @@
 //
 // ================================================================================================
 
-#ifndef SIZE_CONTROL_WIDGE_H_
-#define SIZE_CONTROL_WIDGE_H_
+#ifndef SIZE_CONTROL_H_
+#define SIZE_CONTROL_H_
 
-#include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
 #include <QString>
-#include <QVBoxLayout>
 #include <QWidget>
 
 class SizeControl : public QWidget {
@@ -40,12 +38,6 @@ class SizeControl : public QWidget {
 
  public:
   explicit SizeControl(QWidget* parent = nullptr);
-
-  void setTopSpacing(int spacing);
-  void setMainSpacing(int spacing);
-
-  void setTopMargins(int left, int top, int right, int bottom);
-  void setMainMargins(int left, int top, int right, int bottom);
 
   void setMinimum(int value);
   int minimum() const;
@@ -69,9 +61,6 @@ class SizeControl : public QWidget {
   QSlider* m_slider;
   QSpinBox* m_spinBox;
   QLabel* m_label;
-
-  QHBoxLayout* m_hLayout;
-  QVBoxLayout* m_vLayout;
 };
 
-#endif  // !SIZE_CONTROL_WIDGE_H_
+#endif  // !SIZE_CONTROL_H_

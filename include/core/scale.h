@@ -41,33 +41,35 @@ struct DownScaleConfig {
   QSize range;
   bool widthEnabled{};
   bool heightEnabled{};
-  bool ResizeModeDisabled{};
+  bool resizeModeDisabled{};
 };
 
 struct CropGeometry {
   QSize size;
-  int maxPosition;
+  int maxPosition{};
   CropMode mode;
 };
 
-QSize calcScaledSize(const QSize& imageSize, const QSize& screenSize);
+[[nodiscard]] QSize calcScaledSize(const QSize& imageSize, const QSize& screenSize);
 
-QSize calcWidthFromHeight(const QSize& imageSize, int height);
-QSize calcHeightFromWidth(const QSize& imageSize, int width);
+[[nodiscard]] QSize calcWidthFromHeight(const QSize& imageSize, int height);
+[[nodiscard]] QSize calcHeightFromWidth(const QSize& imageSize, int width);
 
-QImage scale(const QImage& image, QSize size, RoundMode mode = RoundMode::Round);
+[[nodiscard]] QImage scale(const QImage& image, QSize size, RoundMode mode = RoundMode::Round);
 
-QImage upScale(const QImage& image, int factor);
+[[nodiscard]] QImage upScale(const QImage& image, int factor);
 
-DownScaleConfig buildDownScaleConfig(
+[[nodiscard]] DownScaleConfig buildDownScaleConfig(
     DownScaleData& data, const QSize& imageSize, const QSize& screenSize, const QSize& currentScale
 );
 
-CropGeometry computeCropGeometry(QSize imageSize, QSize screenSize);
+[[nodiscard]] CropGeometry computeCropGeometry(QSize imageSize, QSize screenSize);
 
-QImage fitImage(const QImage& image, QSize screenSize, RoundMode mode = RoundMode::Round);
+[[nodiscard]] QImage fitImage(
+    const QImage& image, QSize screenSize, RoundMode mode = RoundMode::Round
+);
 
-QImage cropImage(
+[[nodiscard]] QImage cropImage(
     const QImage& image, QSize screenSize, int position, RoundMode mode = RoundMode::Round
 );
 

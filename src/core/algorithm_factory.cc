@@ -23,55 +23,33 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#include "core/algorithm_factory.h"
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
-
-#include <QMainWindow>
-#include <QStackedWidget>
-
-class Dither;
-class AlgorithmFactory;
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
+AlgorithmFactory& AlgorithmFactory::create() {
+  static AlgorithmFactory factory;
+  return factory;
 }
-QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+IDithering& AlgorithmFactory::dithering(const DitheringAlgorithm& id) const {
+  return *m_ditheringAlgorithms[static_cast<int>(id)];
+}
 
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+std::vector<DitheringAlgorithm> AlgorithmFactory::availableDitheringAlgorithms() const {
+  std::vector<DitheringAlgorithm> algorithms;
+  algorithms.reserve(m_ditheringAlgorithms.size());
 
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
+  for (int i = 0; i < m_ditheringAlgorithms.size(); ++i) {
+    algorithms.push_back(m_ditheringAlgorithms[i]->id());
+  }
 
-  void onPlatformChanged();
+  return algorithms;
+}
 
-  void onDownScaleControlChanged();
-  void onProcess();
+AlgorithmFactory::AlgorithmFactory() {
+  registerDithering(new NoDithering);
+  registerDithering(new FloydSteinbergDithering);
+}
 
- private:
-  void updateDonwScale();
-  void preprocess();
-
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
-};
-
-#endif  // !MAIN_WINDOW_H
+void AlgorithmFactory::registerDithering(IDithering* ditheringPtr) {
+  m_ditheringAlgorithms.push_back(ditheringPtr);
+}

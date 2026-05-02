@@ -35,14 +35,14 @@
 // Constructors
 // ----------------------------------------------------------------------------------------------
 
-Palette::Palette(const std::string& name)
+Palette::Palette(const QString& name)
     : m_name(name) {}
 
 Palette::Palette(const RGBColorsType& colors, bool labEnabled) {
   setPalette(colors, labEnabled);
 }
 
-Palette::Palette(const std::string& name, const RGBColorsType& colors, bool labEnabled) {
+Palette::Palette(const QString& name, const RGBColorsType& colors, bool labEnabled) {
   setPaletteWithName(name, colors, labEnabled);
 }
 
@@ -55,7 +55,7 @@ RGB Palette::findNearestColor(RGB pixel, ColorDistMode mode) const {
     case Palette::ColorDistMode::RGB:
       return findNearestRGB(pixel);
 
-    case Palette::ColorDistMode::WeightedRGB:
+    case Palette::ColorDistMode::WRGB:
       return findNearestWeightedRgb(pixel);
 
     case Palette::ColorDistMode::Lab:
@@ -181,7 +181,7 @@ void Palette::setPalette(const RGBColorsType& colors, bool labEnabled) {
 }
 
 void Palette::setPaletteWithName(
-    const std::string& name, const RGBColorsType& colors, bool labEnabled
+    const QString& name, const RGBColorsType& colors, bool labEnabled
 ) {
   m_name = name;
   setPalette(colors, labEnabled);

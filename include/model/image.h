@@ -35,7 +35,7 @@ class Image {
   explicit Image() = default;
   explicit Image(const QString& path) { open(path); }
 
-  explicit operator bool() const { return m_isLoaded; }
+  explicit operator bool() const { return isLoaded(); }
 
   bool open(const QString& path);
   bool save(const QString& path) const;
@@ -43,7 +43,7 @@ class Image {
   [[nodiscard]] const QImage& original() const { return m_original; }
   [[nodiscard]] const QImage& preprocess() const { return m_preprocess; }
   [[nodiscard]] const QImage& processed() const { return m_processed; }
-  [[nodiscard]] QString filePath() const { return m_filePath; }
+  [[nodiscard]] const QString& filePath() const { return m_filePath; }
   [[nodiscard]] bool isLoaded() const { return m_isLoaded; }
 
   [[nodiscard]] QSize originalSize() const { return m_original.size(); }
