@@ -652,4 +652,5 @@ inline const std::vector<Palette> createDefaultPalettes() {
 
 inline const std::vector<Palette> kBuiltinPalettes = createDefaultPalettes();
 
+// clang-format on
 #endif  // !BUILTIN_PALETTES_H_

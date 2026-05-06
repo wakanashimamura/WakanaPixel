@@ -64,7 +64,7 @@ QuantizationControl::QuantizationControl(QWidget* parent)
 }
 
 int QuantizationControl::currentPaletteIndex() const {
-  return m_palettesCombo->currentIndex();
+  return m_palettesCombo->currentData().toInt();
 }
 
 void QuantizationControl::addDithering(

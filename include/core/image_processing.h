@@ -30,6 +30,7 @@
 #include <QSize>
 
 class IDithering;
+enum class PalettePosition;
 
 [[nodiscard]] QImage preprocessImage(
     const QImage& image,
@@ -40,4 +41,6 @@ class IDithering;
     int position
 );
 
-[[nodiscard]] QImage processImage(const QImage& image, int indexBuiltPalette, IDithering& dither);
+[[nodiscard]] QImage processImage(
+    const QImage& image, int indexBuiltPalette, IDithering& dither, PalettePosition position
+);

@@ -23,57 +23,19 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef IMAGE_PAINTER_H_
+#define IMAGE_PAINTER_H_
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/palette_display_controller.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
+#include "model/palette.h"
 
-#include <QMainWindow>
-#include <QStackedWidget>
+#include <QImage>
 
-class Dither;
-class AlgorithmFactory;
+enum class PalettePosition { None, Top, Bottom };
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
+QImage drawSignature(const QImage& image, const Palette& palette);
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+QImage drawPalette(
+    const QImage& image, const Palette& palette, PalettePosition position, int paletteHeigh
+);
 
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
-
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
-
-  void onPlatformChanged();
-
-  void onDownScaleControlChanged();
-  void onProcess();
-
- private:
-  void updateDonwScale();
-  void preprocess();
-
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
-  PaletteDisplayController* m_paletteDisplayController;
-};
-
-#endif  // !MAIN_WINDOW_H
+#endif  // !IMAGE_PAINTER_H_

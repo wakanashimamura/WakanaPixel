@@ -23,57 +23,29 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef PALETTE_DISPLAY_CONTROLLER_H_
+#define PALETTE_DISPLAY_CONTROLLER_H_
 
-#include "model/image.h"
-#include "model/settings.h"
-#include "ui/palette_display_controller.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
+#include <QComboBox>
+#include <QGroupBox>
 
-#include <QMainWindow>
-#include <QStackedWidget>
+enum class PalettePosition;
 
-class Dither;
-class AlgorithmFactory;
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
+class PaletteDisplayController : public QGroupBox {
   Q_OBJECT
-
  public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
+  explicit PaletteDisplayController(QWidget* parent = nullptr);
 
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
+  PalettePosition currentPalettePosition();
 
-  void onPlatformChanged();
+ public slots:
+  void setCurrentPalettePosition(PalettePosition mode);
 
-  void onDownScaleControlChanged();
-  void onProcess();
+ signals:
+  void palettePositionChanged(PalettePosition position);
 
  private:
-  void updateDonwScale();
-  void preprocess();
-
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
-  PaletteDisplayController* m_paletteDisplayController;
+  QComboBox* m_combo;
 };
 
-#endif  // !MAIN_WINDOW_H
+#endif  // !PALETTE_DISPLAY_CONTROLLER_H_

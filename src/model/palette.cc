@@ -26,6 +26,7 @@
 #include "model/palette.h"
 
 #include "color/color_distance.h"
+#include "core/utils.h"
 
 #include <QtGlobal>
 
@@ -113,6 +114,38 @@ RGB Palette::findNearestLab(RGB pixel) const {
     if (dist < bestDist) {
       bestDist = dist;
       color    = m_colors[i];
+    }
+  }
+  return color;
+}
+
+[[nodiscard]] RGB Palette::findDarkestColor() const {
+  double darkest = std::numeric_limits<double>::max();
+
+  RGB color;
+
+  for (size_t i = 0; i < m_colors.size(); ++i) {
+    const double brightness = calcBrightness(m_colors[i]);
+
+    if (darkest > brightness) {
+      darkest = brightness;
+      color   = m_colors[i];
+    }
+  }
+  return color;
+}
+
+[[nodiscard]] RGB Palette::findLightestColor() const {
+  double darkest = std::numeric_limits<double>::min();
+
+  RGB color;
+
+  for (size_t i = 0; i < m_colors.size(); ++i) {
+    const double brightness = calcBrightness(m_colors[i]);
+
+    if (darkest < brightness) {
+      darkest = brightness;
+      color   = m_colors[i];
     }
   }
   return color;

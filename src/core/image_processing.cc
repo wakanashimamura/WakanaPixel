@@ -26,6 +26,7 @@
 #include "core/image_processing.h"
 
 #include "core/dithering.h"
+#include "core/image_painter.h"
 #include "model/builtin_palettes.h"
 
 QImage preprocessImage(
@@ -62,12 +63,17 @@ QImage preprocessImage(
   return result;
 }
 
-QImage processImage(const QImage& image, int indexBuiltPalette, IDithering& dither) {
+QImage processImage(
+    const QImage& image, int indexBuiltPalette, IDithering& dither, PalettePosition position
+) {
   QImage result;
 
   Palette palette = kBuiltinPalettes[indexBuiltPalette];
 
   result = dither.apply(image, palette);
 
+  result = drawSignature(result, palette);
+
+  result = drawPalette(result, palette, position, 12);
   return result;
 }

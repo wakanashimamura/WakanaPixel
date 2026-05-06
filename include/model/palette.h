@@ -30,6 +30,7 @@
 #include "color/rgb.h"
 
 #include <QString>
+
 #include <vector>
 
 class Palette {
@@ -69,6 +70,9 @@ class Palette {
   [[nodiscard]] RGB findNearestRGB(RGB pixel) const;
   [[nodiscard]] RGB findNearestWeightedRgb(RGB pixel) const;
   [[nodiscard]] RGB findNearestLab(RGB pixel) const;
+
+  [[nodiscard]] RGB findDarkestColor() const;
+  [[nodiscard]] RGB findLightestColor() const;
 
   // ----------------------------------------------------------------------------------------------
   // Lab cache

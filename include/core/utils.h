@@ -27,6 +27,8 @@
 #ifndef UTILS_H_
 #define UTILS_H_
 
+#include "color/rgb.h"
+
 #include <QSize>
 
 #include <cmath>
@@ -79,6 +81,10 @@ enum class RoundMode { Floor, Round, Ceil };
 
 [[nodiscard]] inline bool isPortrait(const QSize& imageSize) {
   return imageSize.height() >= imageSize.width();
+}
+
+[[nodiscard]] inline double calcBrightness(RGB color) {
+  return 0.299 * color.red + 0.587 * color.green + 0.114 * color.blue;
 }
 
 #endif  // !UTILS_H_

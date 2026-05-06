@@ -23,57 +23,40 @@
 //
 // ================================================================================================
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
-
-#include "model/image.h"
-#include "model/settings.h"
 #include "ui/palette_display_controller.h"
-#include "ui/quantization_control.h"
-#include "ui/scale_control.h"
 
-#include <QMainWindow>
-#include <QStackedWidget>
+#include "core/image_painter.h"
 
-class Dither;
-class AlgorithmFactory;
+#include <QVBoxLayout>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
+PaletteDisplayController::PaletteDisplayController(QWidget* parent)
+    : QGroupBox(parent) {
+  setTitle("Palette display");
+
+  m_combo = new QComboBox();
+
+  m_combo->addItem("Top", QVariant::fromValue(PalettePosition::Top));
+  m_combo->addItem("None", QVariant::fromValue(PalettePosition::None));
+  m_combo->addItem("Bottom", QVariant::fromValue(PalettePosition::Bottom));
+  setCurrentPalettePosition(PalettePosition::None);
+
+  QVBoxLayout* layout = new QVBoxLayout(this);
+
+  layout->setSpacing(0);
+  layout->setContentsMargins(9, 0, 9, 6);
+
+  layout->addWidget(m_combo);
+
+  connect(m_combo, &QComboBox::currentIndexChanged, this, [this]() {
+    PalettePosition mode = m_combo->currentData().value<PalettePosition>();
+    emit palettePositionChanged(mode);
+  });
 }
-QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+PalettePosition PaletteDisplayController::currentPalettePosition() {
+  return m_combo->currentData().value<PalettePosition>();
+}
 
- public:
-  MainWindow(QWidget* parent = nullptr);
-  ~MainWindow();
-
- private slots:
-  void onOpen();
-  void onSaveAs();
-  void onFitToView();
-  void onZoomIn();
-  void onZoomOut();
-
-  void onPlatformChanged();
-
-  void onDownScaleControlChanged();
-  void onProcess();
-
- private:
-  void updateDonwScale();
-  void preprocess();
-
-  Ui::MainWindow* m_ui;
-  AlgorithmFactory& m_algorithmFactory;
-  Image m_image;
-
-  ScaleControl* m_downScaleControl;
-  QuantizationControl* m_quantizationControl;
-  PaletteDisplayController* m_paletteDisplayController;
-};
-
-#endif  // !MAIN_WINDOW_H
+void PaletteDisplayController::setCurrentPalettePosition(PalettePosition mode) {
+  m_combo->setCurrentIndex(m_combo->findData(QVariant::fromValue(mode)));
+}

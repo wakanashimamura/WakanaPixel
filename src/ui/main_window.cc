@@ -27,13 +27,12 @@
 
 #include "core/algorithm_factory.h"
 #include "core/image_processing.h"
+#include "core/scale.h"
 #include "ui_main_window.h"
 
 #include <QFileDialog>
 #include <QImage>
 #include <QString>
-
-#include <core/scale.h>
 
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
@@ -86,9 +85,15 @@ MainWindow::MainWindow(QWidget* parent)
   }
   m_quantizationControl->setDitheringIndex(0);
 
-  connect(m_ui->btnPixelate, &QPushButton::clicked, this, &MainWindow::onProcess);
+  // -------- -------- --------
+
+  m_paletteDisplayController = new PaletteDisplayController(this);
+
+  layout->insertWidget(layout->indexOf(m_quantizationControl) + 1, m_paletteDisplayController);
 
   // -------- -------- --------
+
+  connect(m_ui->btnPixelate, &QPushButton::clicked, this, &MainWindow::onProcess);
 
   onPlatformChanged();
 }
@@ -170,7 +175,8 @@ void MainWindow::onProcess() {
   m_image.setProcessed(processImage(
       m_image.preprocess(),
       m_quantizationControl->currentPaletteIndex(),
-      m_algorithmFactory.dithering(m_quantizationControl->currentDitheringId())
+      m_algorithmFactory.dithering(m_quantizationControl->currentDitheringId()),
+      m_paletteDisplayController->currentPalettePosition()
   ));
 
   m_ui->graphicsView->setImage(m_image.processed());
