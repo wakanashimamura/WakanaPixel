@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">* {
     font-family: &quot;Courier New&quot;, monospace;
-    font-size: 12px;
+    font-size: 9pt;
     color: #c8c8c8;
 }
 
@@ -26,7 +26,7 @@ QMainWindow, QDialog {
 
 /* ── TITLE LABEL ──────────────────────────────────────── */
 #labelTitle {
-    font-size: 15px;
+    font-size: 11pt;
     font-weight: bold;
     color: #7c6af7;
     padding: 10px 16px;
@@ -39,7 +39,7 @@ QMainWindow, QDialog {
     border: 2px solid #6a4af7;
     border-radius: 0px;
     color: #ffffff;
-    font-size: 13px;
+    font-size: 10pt;
     font-weight: bold;
     letter-spacing: 2px;
     padding: 12px;

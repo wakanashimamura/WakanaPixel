@@ -36,8 +36,9 @@
 // Constructors
 // ----------------------------------------------------------------------------------------------
 
-Palette::Palette(const QString& name)
-    : m_name(name) {}
+Palette::Palette(const QString& name, bool labEnabled)
+    : m_name(name),
+      m_labEnabled(labEnabled) {}
 
 Palette::Palette(const RGBColorsType& colors, bool labEnabled) {
   setPalette(colors, labEnabled);

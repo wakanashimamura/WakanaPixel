@@ -52,7 +52,7 @@ class Palette {
   // Constructors
   // ----------------------------------------------------------------------------------------------
 
-  explicit Palette(const QString& name = {});
+  explicit Palette(const QString& name = {}, bool labEnabled = true);
   explicit Palette(const RGBColorsType& colors, bool labEnabled = true);
   explicit Palette(const QString& name, const RGBColorsType& colors, bool labEnabled = true);
 

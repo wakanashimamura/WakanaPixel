@@ -27,6 +27,7 @@
 
 #include "core/algorithm_factory.h"
 #include "core/image_processing.h"
+#include "core/median_cut.h"
 #include "core/scale.h"
 #include "ui_main_window.h"
 
@@ -174,6 +175,7 @@ void MainWindow::onProcess() {
 
   m_image.setProcessed(processImage(
       m_image.preprocess(),
+      m_algorithmFactory.generator(PaletteGenerator::MedianCut),
       m_quantizationControl->currentPaletteIndex(),
       m_algorithmFactory.dithering(m_quantizationControl->currentDitheringId()),
       m_paletteDisplayController->currentPalettePosition()

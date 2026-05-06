@@ -64,11 +64,21 @@ QImage preprocessImage(
 }
 
 QImage processImage(
-    const QImage& image, int indexBuiltPalette, IDithering& dither, PalettePosition position
+    const QImage& image,
+    IPaletteGenerator& generator,
+    int indexBuiltPalette,
+    IDithering& dither,
+    PalettePosition position
 ) {
   QImage result;
 
-  Palette palette = kBuiltinPalettes[indexBuiltPalette];
+  Palette palette;
+
+  if (indexBuiltPalette == -1) {
+    palette = generator.apply(image, 16);
+  } else {
+    palette = kBuiltinPalettes[indexBuiltPalette];
+  }
 
   result = dither.apply(image, palette);
 

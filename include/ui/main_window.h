@@ -35,7 +35,6 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 
-class Dither;
 class AlgorithmFactory;
 
 QT_BEGIN_NAMESPACE

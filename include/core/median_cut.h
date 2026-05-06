@@ -23,36 +23,17 @@
 //
 // ================================================================================================
 
-#ifndef ALGORITHM_FACTORY_H_
-#define ALGORITHM_FACTORY_H_
+#ifndef MEDIAN_CUT_H_
+#define MEDIAN_CUT_H_
 
-#include "core/dithering.h"
-#include "core/median_cut.h"
+#include "core/palette_generator.h"
 
-#include <unordered_map>
-#include <vector>
-
-class AlgorithmFactory {
+class MedianCut final : public IPaletteGenerator {
  public:
-  static AlgorithmFactory& create();
-
-  [[nodiscard]] IDithering& dithering(const DitheringAlgorithm& id) const;
-  [[nodiscard]] std::vector<DitheringAlgorithm> availableDitheringAlgorithms() const;
-
-  [[nodiscard]] IPaletteGenerator& generator(const PaletteGenerator& id) const;
-  [[nodiscard]] std::vector<PaletteGenerator> availableGeneratorAlgorithms() const;
-
-  AlgorithmFactory(const AlgorithmFactory&)            = delete;
-  AlgorithmFactory& operator=(const AlgorithmFactory&) = delete;
-
- private:
-  AlgorithmFactory();
-
-  void registerDithering(IDithering* ptr);
-  void registerGenerator(IPaletteGenerator* ptr);
-
-  std::vector<IDithering*> m_ditheringAlgorithms;
-  std::vector<IPaletteGenerator*> m_generatorAlgorithms;
+  [[nodiscard]] Palette apply(const QImage& image, int colorCount) override;
+  [[nodiscard]] QGroupBox* createSettingsWidget(QWidget* parent = nullptr) override;
+  [[nodiscard]] PaletteGenerator id() const override;
+  [[nodiscard]] QString displayName() const override;
 };
 
-#endif  // !ALGORITHM_FACTORY_H_
+#endif  // !MEDIAN_CUT_H_

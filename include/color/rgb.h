@@ -72,8 +72,9 @@ union RGB {
   constexpr RGB(ValueType color) noexcept
       : argb(color) {}
 
-  constexpr RGB(ChannelType red_, ChannelType green_, ChannelType blue_,
-                ChannelType alpha_ = 255) noexcept
+  constexpr RGB(
+      ChannelType red_, ChannelType green_, ChannelType blue_, ChannelType alpha_ = 255
+  ) noexcept
       : blue(blue_),
         green(green_),
         red(red_),
@@ -93,16 +94,16 @@ union RGB {
   // ----------------------------------------------------------------------------------------------
 
   [[nodiscard]]
-  static ChannelType color(const RGB color, Channel channel) {
+  ChannelType color(Channel channel) const {
     switch (channel) {
       case Channel::Red:
-        return color.red;
+        return red;
       case Channel::Green:
-        return color.green;
+        return green;
       case Channel::Blue:
-        return color.blue;
+        return blue;
       case Channel::Alpha:
-        return color.alpha;
+        return alpha;
     }
   }
 };

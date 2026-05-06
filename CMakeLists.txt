@@ -30,8 +30,9 @@ set(SOURCES
 
   src/core/algorithm_factory.cc
   src/core/dithering.cc
-  src/core/image_processing.cc
   src/core/image_painter.cc
+  src/core/image_processing.cc
+  src/core/median_cut.cc
   src/core/scale.cc
 
   src/model/image.cc

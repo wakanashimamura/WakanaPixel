@@ -23,6 +23,7 @@
 //
 // ================================================================================================
 
+#include "core/palette_generator.h"
 #include "core/scale.h"
 #include "model/settings.h"
 
@@ -42,5 +43,9 @@ enum class PalettePosition;
 );
 
 [[nodiscard]] QImage processImage(
-    const QImage& image, int indexBuiltPalette, IDithering& dither, PalettePosition position
+    const QImage& image,
+    IPaletteGenerator& generator,
+    int indexBuiltPalette,
+    IDithering& dither,
+    PalettePosition position
 );

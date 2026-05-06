@@ -37,6 +37,9 @@ QuantizationControl::QuantizationControl(QWidget* parent)
   m_ditheringComboBox      = new QComboBox;
   m_ditheringSettingsPanel = new SettingsPanelController;
 
+  // This is a kludge.
+  m_palettesCombo->addItem("Median Cut", -1);
+
   for (int i = 0; i < kBuiltinPalettes.size(); ++i) {
     m_palettesCombo->addItem(kBuiltinPalettes[i].name(), i);
   }

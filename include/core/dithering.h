@@ -39,12 +39,14 @@ enum class DitheringAlgorithm { None, FloydSteinberg };
 // IDithering
 // ----------------------------------------------------------------------------------------------
 
-class IDithering : public QObject {
+class IDithering {
  public:
   [[nodiscard]] virtual QImage apply(const QImage& image, const Palette& palette)  = 0;
   [[nodiscard]] virtual QGroupBox* createSettingsWidget(QWidget* parent = nullptr) = 0;
   [[nodiscard]] virtual DitheringAlgorithm id() const                              = 0;
   [[nodiscard]] virtual QString displayName() const                                = 0;
+
+  virtual ~IDithering() = default;
 };
 
 // ----------------------------------------------------------------------------------------------

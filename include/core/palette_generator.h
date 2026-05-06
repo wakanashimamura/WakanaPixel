@@ -23,36 +23,28 @@
 //
 // ================================================================================================
 
-#ifndef ALGORITHM_FACTORY_H_
-#define ALGORITHM_FACTORY_H_
+#ifndef PALETTE_GENERATOR_H_
+#define PALETTE_GENERATOR_H_
 
-#include "core/dithering.h"
-#include "core/median_cut.h"
+#include "color/rgb.h"
+#include "model/palette.h"
 
-#include <unordered_map>
+#include <QGroupBox>
+#include <QImage>
+#include <QString>
+
 #include <vector>
 
-class AlgorithmFactory {
+enum class PaletteGenerator { MedianCut, None };
+
+class IPaletteGenerator {
  public:
-  static AlgorithmFactory& create();
+  [[nodiscard]] virtual Palette apply(const QImage& image, int colorCount)         = 0;
+  [[nodiscard]] virtual QGroupBox* createSettingsWidget(QWidget* parent = nullptr) = 0;
+  [[nodiscard]] virtual PaletteGenerator id() const                                = 0;
+  [[nodiscard]] virtual QString displayName() const                                = 0;
 
-  [[nodiscard]] IDithering& dithering(const DitheringAlgorithm& id) const;
-  [[nodiscard]] std::vector<DitheringAlgorithm> availableDitheringAlgorithms() const;
-
-  [[nodiscard]] IPaletteGenerator& generator(const PaletteGenerator& id) const;
-  [[nodiscard]] std::vector<PaletteGenerator> availableGeneratorAlgorithms() const;
-
-  AlgorithmFactory(const AlgorithmFactory&)            = delete;
-  AlgorithmFactory& operator=(const AlgorithmFactory&) = delete;
-
- private:
-  AlgorithmFactory();
-
-  void registerDithering(IDithering* ptr);
-  void registerGenerator(IPaletteGenerator* ptr);
-
-  std::vector<IDithering*> m_ditheringAlgorithms;
-  std::vector<IPaletteGenerator*> m_generatorAlgorithms;
+  virtual ~IPaletteGenerator() = default;
 };
 
-#endif  // !ALGORITHM_FACTORY_H_
+#endif  // !PALETTE_GENERATOR_H_

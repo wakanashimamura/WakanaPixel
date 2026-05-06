@@ -45,11 +45,32 @@ std::vector<DitheringAlgorithm> AlgorithmFactory::availableDitheringAlgorithms()
   return algorithms;
 }
 
+IPaletteGenerator& AlgorithmFactory::generator(const PaletteGenerator& id) const {
+  return *m_generatorAlgorithms[static_cast<int>(id)];
+}
+
+std::vector<PaletteGenerator> AlgorithmFactory::availableGeneratorAlgorithms() const {
+  std::vector<PaletteGenerator> algorithms;
+  algorithms.reserve(m_generatorAlgorithms.size());
+
+  for (int i = 0; i < m_generatorAlgorithms.size(); ++i) {
+    algorithms.push_back(m_generatorAlgorithms[i]->id());
+  }
+
+  return algorithms;
+}
+
 AlgorithmFactory::AlgorithmFactory() {
   registerDithering(new NoDithering);
   registerDithering(new FloydSteinbergDithering);
+
+  registerGenerator(new MedianCut);
 }
 
-void AlgorithmFactory::registerDithering(IDithering* ditheringPtr) {
-  m_ditheringAlgorithms.push_back(ditheringPtr);
+void AlgorithmFactory::registerDithering(IDithering* ptr) {
+  m_ditheringAlgorithms.push_back(ptr);
+}
+
+void AlgorithmFactory::registerGenerator(IPaletteGenerator* ptr) {
+  m_generatorAlgorithms.push_back(ptr);
 }
