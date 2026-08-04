@@ -1,110 +1,26 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.21)
 
-# ========================
-# Project Setup
-# ========================
+project(wakana_pixel VERSION 1.0.0 LANGUAGES CXX)
 
-project(WakanaPixel VERSION 1.0.0 LANGUAGES CXX)
-
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-# ========================
-# Qt
-# ========================
-
-find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Core Gui Widgets)
 
 qt_standard_project_setup()
 
-set(CMAKE_AUTORCC ON)
+add_library(wakana_pixel_includes INTERFACE)
 
-set(CMAKE_AUTOUIC_SEARCH_PATHS ui)
-
-# ========================
-# Source Files
-# ========================
-
-set(SOURCES
-  src/main.cc
-
-  src/core/algorithm_factory.cc
-  src/core/dithering.cc
-  src/core/image_painter.cc
-  src/core/image_processing.cc
-  src/core/median_cut.cc
-  src/core/scale.cc
-
-  src/model/image.cc
-  src/model/palette.cc
-  src/model/settings.cc
-
-  src/ui/crop_control.cc
-  src/ui/dithering_settings_control.cc
-  src/ui/graphics_view.cc
-  src/ui/main_window.cc
-  src/ui/palette_display_controller.cc
-  src/ui/quantization_control.cc
-  src/ui/resize_mode_control.cc
-  src/ui/scale_control.cc
-  src/ui/settings_panel_controller.cc
-  src/ui/size_control.cc
+target_include_directories(wakana_pixel_includes INTERFACE 
+  "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
-set(HEADER
-  include/ui/crop_control.h
-  include/ui/dithering_settings_control.h
-  include/ui/graphics_view.h
-  include/ui/main_window.h
-  include/ui/palette_display_controller.h
-  include/ui/quantization_control.h
-  include/ui/resize_mode_control.h
-  include/ui/scale_control.h
-  include/ui/settings_panel_controller.h
-  include/ui/size_control.h
-)
+add_subdirectory(src/ui)
 
-set(UI
-  ui/main_window.ui
-)
-
-set(RESOURCES
-)
-
-# ========================
-# Executable
-# ========================
-
-qt_add_executable(${PROJECT_NAME}
+qt_add_executable(wakana_pixel
   WIN32 
   MACOSX_BUNDLE
-  ${SOURCES}
-  ${HEADER}
-  ${UI}
-  ${RESOURCES}
+  src/main.cpp
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE include)
-
-target_link_libraries(${PROJECT_NAME}
-  PRIVATE
-    Qt6::Core
-    Qt6::Widgets
+target_link_libraries(wakana_pixel PRIVATE
+  wakana_pixel_includes
+  wakana_pixel_ui
 )
-
-set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_SOURCE_DIR}" CACHE PATH "Install path" FORCE)
-
-include(GNUInstallDirs)
-
-install(TARGETS ${PROJECT_NAME}
-  BUNDLE  DESTINATION .
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-qt_generate_deploy_app_script(
-  TARGET ${PROJECT_NAME}
-  OUTPUT_SCRIPT deploy_script
-  NO_UNSUPPORTED_PLATFORM_ERROR
-)
-install(SCRIPT ${deploy_script})
