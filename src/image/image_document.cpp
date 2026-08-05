@@ -23,31 +23,27 @@
 //
 // ================================================================================================
 
-#pragma once
+#include "image_document.h"
 
-#include <QMainWindow>
+bool ImageDocument::load(const QString& filePath) {
+  QImage image;
+  if (filePath.isEmpty() || !image.load(filePath)) {
+    return false;
+  }
 
-class ProcessingController;
+  m_originalImage = image.convertToFormat(QImage::Format_RGB32);
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
+  return true;
 }
-QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow {
-  Q_OBJECT
+bool ImageDocument::save(const QString& filePath) const {
+  return !filePath.isEmpty() && m_originalImage.save(filePath);
+}
 
- public:
-  explicit MainWindow(QWidget* parent = nullptr);
-  ~MainWindow() override;
-  void setController(ProcessingController* controller);
+bool ImageDocument::isNull() const noexcept {
+  return m_originalImage.isNull();
+}
 
- private slots:
-  void selectImageToOpen();
-  void selectImageSavePath();
-
- private:
-  Ui::MainWindow* m_ui;
-  ProcessingController* m_controller = nullptr;
-};
+const QImage& ImageDocument::originalImage() const noexcept {
+  return m_originalImage;
+}

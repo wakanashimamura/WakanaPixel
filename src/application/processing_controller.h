@@ -25,29 +25,23 @@
 
 #pragma once
 
-#include <QMainWindow>
+#include "image/image_document.h"
 
-class ProcessingController;
+#include <QObject>
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
+class ProcessingController final : public QObject {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget* parent = nullptr);
-  ~MainWindow() override;
-  void setController(ProcessingController* controller);
+  explicit ProcessingController(QObject* parent = nullptr);
 
- private slots:
-  void selectImageToOpen();
-  void selectImageSavePath();
+ public slots:
+  void openImage(const QString& filePath);
+  void saveImage(const QString& filePath);
+
+ signals:
+  void imageLoaded(const QImage& image);
 
  private:
-  Ui::MainWindow* m_ui;
-  ProcessingController* m_controller = nullptr;
+  ImageDocument m_imageDocument;
 };

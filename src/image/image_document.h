@@ -25,29 +25,19 @@
 
 #pragma once
 
-#include <QMainWindow>
+#include <QImage>
+#include <QString>
 
-class ProcessingController;
-
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
-  Q_OBJECT
-
+class ImageDocument {
  public:
-  explicit MainWindow(QWidget* parent = nullptr);
-  ~MainWindow() override;
-  void setController(ProcessingController* controller);
+  explicit ImageDocument() = default;
 
- private slots:
-  void selectImageToOpen();
-  void selectImageSavePath();
+  [[nodiscard]] bool load(const QString& filePath);
+  [[nodiscard]] bool save(const QString& filePath) const;
+  [[nodiscard]] bool isNull() const noexcept;
+
+  [[nodiscard]] const QImage& originalImage() const noexcept;
 
  private:
-  Ui::MainWindow* m_ui;
-  ProcessingController* m_controller = nullptr;
+  QImage m_originalImage;
 };

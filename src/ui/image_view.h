@@ -25,29 +25,32 @@
 
 #pragma once
 
-#include <QMainWindow>
+#include <QGraphicsView>
 
-class ProcessingController;
+class QGraphicsPixmapItem;
+class QGraphicsScene;
 
-QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
-QT_END_NAMESPACE
-
-class MainWindow : public QMainWindow {
+class ImageView final : public QGraphicsView {
   Q_OBJECT
 
  public:
-  explicit MainWindow(QWidget* parent = nullptr);
-  ~MainWindow() override;
-  void setController(ProcessingController* controller);
+  explicit ImageView(QWidget* parent = nullptr);
 
- private slots:
-  void selectImageToOpen();
-  void selectImageSavePath();
+  void fitImage();
+  void zoomIn();
+  void zoomOut();
+
+ public slots:
+  void setImage(const QImage& image);
+
+ protected:
+  void wheelEvent(QWheelEvent* event) override;
 
  private:
-  Ui::MainWindow* m_ui;
-  ProcessingController* m_controller = nullptr;
+  QGraphicsScene* m_scene;
+  QGraphicsPixmapItem* m_imageItem;
+
+  static constexpr double k_zoomFactor   = 1.10;
+  static constexpr double k_minimumScale = 0.05;  // 5%
+  static constexpr double k_maximumScale = 50.0;  // 5000%
 };

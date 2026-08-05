@@ -12,6 +12,8 @@ target_include_directories(wakana_pixel_includes INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
+add_subdirectory(src/application)
+add_subdirectory(src/image)
 add_subdirectory(src/ui)
 
 qt_add_executable(wakana_pixel
@@ -22,5 +24,6 @@ qt_add_executable(wakana_pixel
 
 target_link_libraries(wakana_pixel PRIVATE
   wakana_pixel_includes
+  wakana_pixel_application
   wakana_pixel_ui
 )
