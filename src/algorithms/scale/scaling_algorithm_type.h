@@ -25,20 +25,4 @@
 
 #pragma once
 
-#include <QImage>
-#include <QString>
-
-class ImageDocument {
- public:
-  explicit ImageDocument() = default;
-
-  bool load(const QString& filePath);
-  bool save(const QString& filePath) const;
-
-  [[nodiscard]] bool isNull() const noexcept;
-
-  [[nodiscard]] const QImage& originalImage() const noexcept;
-
- private:
-  QImage m_originalImage;
-};
+enum class ScalingAlgorithmType { NearestNeighbor };

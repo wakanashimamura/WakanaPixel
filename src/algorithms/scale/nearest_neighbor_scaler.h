@@ -25,20 +25,12 @@
 
 #pragma once
 
-#include <QImage>
-#include <QString>
+#include "scaling_algorithm.h"
 
-class ImageDocument {
+class NearestNeighborScaler : public scalingAlgorithm {
  public:
-  explicit ImageDocument() = default;
+  [[nodiscard]] QImage scale(const QImage& image, QSize size, ScalingParams* params) override;
 
-  bool load(const QString& filePath);
-  bool save(const QString& filePath) const;
-
-  [[nodiscard]] bool isNull() const noexcept;
-
-  [[nodiscard]] const QImage& originalImage() const noexcept;
-
- private:
-  QImage m_originalImage;
+  [[nodiscard]] ScalingAlgorithmType type() const override;
+  [[nodiscard]] QString name() const override;
 };

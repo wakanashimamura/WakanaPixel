@@ -12,6 +12,7 @@ target_include_directories(wakana_pixel_includes INTERFACE
   "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
+add_subdirectory(src/algorithms)
 add_subdirectory(src/application)
 add_subdirectory(src/image)
 add_subdirectory(src/ui)

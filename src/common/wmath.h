@@ -23,22 +23,48 @@
 //
 // ================================================================================================
 
-#pragma once
+#pragma once 
 
-#include <QImage>
-#include <QString>
+#include <cmath>
+#include <cstdint>
 
-class ImageDocument {
- public:
-  explicit ImageDocument() = default;
+enum class RoundingMode { Floor, Round, Ceil };
 
-  bool load(const QString& filePath);
-  bool save(const QString& filePath) const;
+[[nodiscard]] inline int round(double value, RoundingMode mode) {
+  switch (mode) {
+    case RoundingMode::Floor:
+      return static_cast<int>(std::floor(value));
+    case RoundingMode::Round:
+      return static_cast<int>(std::round(value));
+    case RoundingMode::Ceil:
+      return static_cast<int>(std::ceil(value));
+    default:
+      return static_cast<int>(value);
+  }
+}
 
-  [[nodiscard]] bool isNull() const noexcept;
+[[nodiscard]] inline int square(int value) {
+  return value * value;
+}
 
-  [[nodiscard]] const QImage& originalImage() const noexcept;
+[[nodiscard]] inline double square(double value) {
+  return value * value;
+}
 
- private:
-  QImage m_originalImage;
-};
+[[nodiscard]] inline int cube(int value) {
+  return value * value * value;
+}
+
+[[nodiscard]] inline double cube(double value) {
+  return value * value * value;
+}
+
+[[nodiscard]] inline uint8_t clampByte(int value) {
+  if (value > 255) {
+    return 255;
+  } else if (value < 0) {
+    return 0;
+  }
+
+  return value;
+}

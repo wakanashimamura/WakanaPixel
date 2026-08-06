@@ -25,20 +25,12 @@
 
 #pragma once
 
-#include <QImage>
-#include <QString>
+#include "common/wmath.h"
 
-class ImageDocument {
- public:
-  explicit ImageDocument() = default;
+struct ScalingParams {
+  virtual ~ScalingParams() = default;
+};
 
-  bool load(const QString& filePath);
-  bool save(const QString& filePath) const;
-
-  [[nodiscard]] bool isNull() const noexcept;
-
-  [[nodiscard]] const QImage& originalImage() const noexcept;
-
- private:
-  QImage m_originalImage;
+struct NearestNeighborParams : public ScalingParams {
+  RoundingMode roundingMode = RoundingMode::Round;
 };

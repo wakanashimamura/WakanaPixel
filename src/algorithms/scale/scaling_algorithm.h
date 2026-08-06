@@ -25,20 +25,19 @@
 
 #pragma once
 
+#include "scaling_algorithm_type.h"
+#include "scaling_params.h"
+
 #include <QImage>
+#include <QSize>
 #include <QString>
 
-class ImageDocument {
+class scalingAlgorithm {
  public:
-  explicit ImageDocument() = default;
+  virtual ~scalingAlgorithm() = default;
 
-  bool load(const QString& filePath);
-  bool save(const QString& filePath) const;
+  [[nodiscard]] virtual QImage scale(const QImage& image, QSize size, ScalingParams* params) = 0;
 
-  [[nodiscard]] bool isNull() const noexcept;
-
-  [[nodiscard]] const QImage& originalImage() const noexcept;
-
- private:
-  QImage m_originalImage;
+  [[nodiscard]] virtual ScalingAlgorithmType type() const = 0;
+  [[nodiscard]] virtual QString name() const              = 0;
 };
