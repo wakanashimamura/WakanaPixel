@@ -25,46 +25,20 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdint>
+#include <QSize>
 
-enum class RoundingMode { Floor, Round, Ceil };
+enum class AspectFillDimension { Width, Height };
 
-[[nodiscard]] inline int round(double value, RoundingMode mode) {
-  switch (mode) {
-    case RoundingMode::Floor:
-      return static_cast<int>(std::floor(value));
-    case RoundingMode::Round:
-      return static_cast<int>(std::round(value));
-    case RoundingMode::Ceil:
-      return static_cast<int>(std::ceil(value));
-    default:
-      return static_cast<int>(value);
-  }
-}
+struct AspectFillResult {
+  QSize size;
+  AspectFillDimension fillReference;
+  int maxCropOffset;
+};
 
-[[nodiscard]] inline int square(int value) {
-  return value * value;
-}
+QSize calculateAspectFitSize(const QSize& sourceSize, const QSize& bounds);
 
-[[nodiscard]] inline double square(double value) {
-  return value * value;
-}
+AspectFillResult calculateAspectFillSize(const QSize& sourceSize, const QSize& bounds);
 
-[[nodiscard]] inline int cube(int value) {
-  return value * value * value;
-}
+QSize calculateWidthByHeight(const QSize& sourceSize, int height);
 
-[[nodiscard]] inline double cube(double value) {
-  return value * value * value;
-}
-
-[[nodiscard]] inline uint8_t clampByte(int value) {
-  if (value > 255) {
-    return 255;
-  } else if (value < 0) {
-    return 0;
-  }
-
-  return value;
-}
+QSize calculateHeightByWidth(const QSize& sourceSize, int width);

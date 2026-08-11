@@ -25,12 +25,26 @@
 
 #include "processing_controller.h"
 
+#include "algorithms/scale/nearest_neighbor_scaler.h"
+#include "processing/resize.h"
+
 ProcessingController::ProcessingController(QObject* parent)
     : QObject(parent) {}
 
 void ProcessingController::openImage(const QString& filePath) {
   if (m_imageDocument.load(filePath)) {
-    emit imageLoaded(m_imageDocument.originalImage());
+    ScalingAlgorithm* scaler = new NearestNeighborScaler;
+    NearestNeighborParams params;
+
+    emit imageLoaded(resize(
+        m_imageDocument.originalImage(),
+        QSize(320, 256),
+        ResizeMode::Original,
+        scaler,
+        &params
+    ));
+
+    delete scaler;
   }
 }
 

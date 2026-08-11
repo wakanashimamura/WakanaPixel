@@ -15,6 +15,7 @@ target_include_directories(wakana_pixel_includes INTERFACE
 add_subdirectory(src/algorithms)
 add_subdirectory(src/application)
 add_subdirectory(src/image)
+add_subdirectory(src/processing)
 add_subdirectory(src/ui)
 
 qt_add_executable(wakana_pixel

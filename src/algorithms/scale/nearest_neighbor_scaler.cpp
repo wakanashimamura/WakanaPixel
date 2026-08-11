@@ -29,7 +29,7 @@
 
 #include <QtAssert>
 
-QImage NearestNeighborScaler::scale(const QImage& image, QSize size, ScalingParams* params) {
+QImage NearestNeighborScaler::scale(const QImage& image, QSize size, const ScalingParams* params) {
   Q_ASSERT_X(!image.isNull(), Q_FUNC_INFO, "Image that was sent is empty..");
 
   if (size.isEmpty()) {

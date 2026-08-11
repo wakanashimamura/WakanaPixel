@@ -25,46 +25,47 @@
 
 #pragma once
 
-#include <cmath>
-#include <cstdint>
+#include "algorithms/scale/scaling_algorithm.h"
 
-enum class RoundingMode { Floor, Round, Ceil };
+#include <QImage>
 
-[[nodiscard]] inline int round(double value, RoundingMode mode) {
-  switch (mode) {
-    case RoundingMode::Floor:
-      return static_cast<int>(std::floor(value));
-    case RoundingMode::Round:
-      return static_cast<int>(std::round(value));
-    case RoundingMode::Ceil:
-      return static_cast<int>(std::ceil(value));
-    default:
-      return static_cast<int>(value);
-  }
-}
+enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
 
-[[nodiscard]] inline int square(int value) {
-  return value * value;
-}
+QImage resize(
+    const QImage& image,
+    QSize size,
+    ResizeMode mode,
+    ScalingAlgorithm* scaler,
+    const ScalingParams* scalingParams,
+    int cropOffset = 0
+);
 
-[[nodiscard]] inline double square(double value) {
-  return value * value;
-}
+QImage resizeToFitWithPadding(
+    const QImage& image,
+    QSize targetSize,
+    ScalingAlgorithm* scaler,
+    const ScalingParams* scalingParams
+);
 
-[[nodiscard]] inline int cube(int value) {
-  return value * value * value;
-}
+QImage resizeToFit(
+    const QImage& image,
+    QSize targetSize,
+    ScalingAlgorithm* scaler,
+    const ScalingParams* scalingParams
+);
 
-[[nodiscard]] inline double cube(double value) {
-  return value * value * value;
-}
+QImage resizeWidthByHeight(
+    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+);
 
-[[nodiscard]] inline uint8_t clampByte(int value) {
-  if (value > 255) {
-    return 255;
-  } else if (value < 0) {
-    return 0;
-  }
+QImage resizeHeightByWidth(
+    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+);
 
-  return value;
-}
+QImage resizeToFill(
+    const QImage& image,
+    QSize targetSize,
+    int cropOffset,
+    ScalingAlgorithm* scaler,
+    const ScalingParams* scalingParams
+);

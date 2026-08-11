@@ -32,11 +32,13 @@
 #include <QSize>
 #include <QString>
 
-class scalingAlgorithm {
+class ScalingAlgorithm {
  public:
-  virtual ~scalingAlgorithm() = default;
+  virtual ~ScalingAlgorithm() = default;
 
-  [[nodiscard]] virtual QImage scale(const QImage& image, QSize size, ScalingParams* params) = 0;
+  [[nodiscard]] virtual QImage scale(
+      const QImage& image, QSize size, const ScalingParams* params
+  ) = 0;
 
   [[nodiscard]] virtual ScalingAlgorithmType type() const = 0;
   [[nodiscard]] virtual QString name() const              = 0;

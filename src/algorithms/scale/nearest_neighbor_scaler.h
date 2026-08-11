@@ -27,9 +27,9 @@
 
 #include "scaling_algorithm.h"
 
-class NearestNeighborScaler : public scalingAlgorithm {
+class NearestNeighborScaler : public ScalingAlgorithm {
  public:
-  [[nodiscard]] QImage scale(const QImage& image, QSize size, ScalingParams* params) override;
+  [[nodiscard]] QImage scale(const QImage& image, QSize size, const ScalingParams* params) override;
 
   [[nodiscard]] ScalingAlgorithmType type() const override;
   [[nodiscard]] QString name() const override;
