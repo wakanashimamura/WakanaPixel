@@ -25,48 +25,26 @@
 
 #pragma once
 
-#include "algorithms/scale/scaling_algorithm.h"
+#include "processing/resize.h"
 
-#include <QImage>
+#include <QGroupBox>
 
-enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
+class QComboBox;
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset = 0
-);
+class ResizeModeSelector : public QGroupBox {
+  Q_OBJECT
 
-QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ public:
+  explicit ResizeModeSelector(QWidget* parent = nullptr);
 
-QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  [[nodiscard]] ResizeMode mode() const;
 
-QImage resizeToFill(
-    const QImage& image,
-    QSize targetSize,
-    int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ public slots:
+  void setMode(ResizeMode mode);
 
-QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
+ signals:
+  void modeChanged(ResizeMode mode);
 
-QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
-
+ private:
+  QComboBox* m_comboBox;
+};

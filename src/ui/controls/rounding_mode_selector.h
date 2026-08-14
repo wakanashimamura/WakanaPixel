@@ -25,48 +25,28 @@
 
 #pragma once
 
-#include "algorithms/scale/scaling_algorithm.h"
+#include "common/wmath.h"
 
-#include <QImage>
+#include <QGroupBox>
 
-enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
+class QButtonGroup;
+class QRadioButton;
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset = 0
-);
+class RoundingModeSelector : public QGroupBox {
+  Q_OBJECT
 
-QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ public:
+  explicit RoundingModeSelector(QWidget* parent = nullptr);
 
-QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  [[nodiscard]] RoundingMode mode() const;
 
-QImage resizeToFill(
-    const QImage& image,
-    QSize targetSize,
-    int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ public slots:
+  void setMode(RoundingMode mode);
 
-QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
+ signals:
+  void modeChanged(RoundingMode mode);
 
-QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
-
+ private:
+  RoundingMode m_mode = RoundingMode::Round;
+  QButtonGroup* m_buttonGroup;
+};

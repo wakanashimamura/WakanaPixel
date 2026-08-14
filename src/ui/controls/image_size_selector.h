@@ -25,48 +25,44 @@
 
 #pragma once
 
-#include "algorithms/scale/scaling_algorithm.h"
+#include <QGroupBox>
+#include <QSize>
 
-#include <QImage>
+class SliderSpinBox;
 
-enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
+class ImageSizeSelector : public QGroupBox {
+  Q_OBJECT
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset = 0
-);
+ public:
+  explicit ImageSizeSelector(QWidget* parent = nullptr);
 
-QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  [[nodiscard]] QSize value() const;
 
-QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  void setWidthVisible(bool visible);
+  bool isWidthVisible() const;
 
-QImage resizeToFill(
-    const QImage& image,
-    QSize targetSize,
-    int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  void setHeightVisible(bool visible);
+  bool isHeightVisible() const;
 
-QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
+  void setWidthEnabled(bool enabled);
+  bool isWidthEnabled() const;
 
-QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
+  void setHeightEnabled(bool enabled);
+  bool isHeightEnabled() const;
 
+ public slots:
+  void setValue(QSize value);
+
+  void setWidthRange(int minimum, int maximum);
+  void setHeightRange(int minimum, int maximum);
+
+ signals:
+  void valueChanged(QSize value);
+
+ private:
+  void updateVisibility();
+  void updateEnabled();
+
+  SliderSpinBox* m_width;
+  SliderSpinBox* m_height;
+};

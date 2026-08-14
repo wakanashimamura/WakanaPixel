@@ -55,10 +55,10 @@ QImage resize(
       return resizeToFill(image, size, cropOffset, scaler, scalingParams);
 
     case ResizeMode::Width:
-      return resizeHeightByWidth(image, size.width(), scaler, scalingParams);
+      return resizeByWidth(image, size.width(), scaler, scalingParams);
 
     case ResizeMode::Height:
-      return resizeWidthByHeight(image, size.height(), scaler, scalingParams);
+      return resizeByHeight(image, size.height(), scaler, scalingParams);
   }
 }
 
@@ -96,20 +96,6 @@ QImage resizeToFit(
   return scaler->scale(image, newSize, scalingParams);
 }
 
-QImage resizeWidthByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-) {
-  QSize newSize = calculateWidthByHeight(image.size(), height);
-  return scaler->scale(image, newSize, scalingParams);
-}
-
-QImage resizeHeightByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-) {
-  QSize newSize = calculateHeightByWidth(image.size(), width);
-  return scaler->scale(image, newSize, scalingParams);
-}
-
 QImage resizeToFill(
     const QImage& image,
     QSize targetSize,
@@ -143,4 +129,18 @@ QImage resizeToFill(
   painter.end();
 
   return dstImage;
+}
+
+QImage resizeByWidth(
+    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+) {
+  QSize newSize = calculateHeightByWidth(image.size(), width);
+  return scaler->scale(image, newSize, scalingParams);
+}
+
+QImage resizeByHeight(
+    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+) {
+  QSize newSize = calculateWidthByHeight(image.size(), height);
+  return scaler->scale(image, newSize, scalingParams);
 }

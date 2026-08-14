@@ -25,48 +25,37 @@
 
 #pragma once
 
-#include "algorithms/scale/scaling_algorithm.h"
+#include "processing/resize_geometry.h"
 
-#include <QImage>
+#include <QGroupBox>
 
-enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
+class QPushButton;
+class QSlider;
+class QSpinBox;
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset = 0
-);
+class CropPositionSelector : public QGroupBox {
+  Q_OBJECT
 
-QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ public:
+  explicit CropPositionSelector(QWidget* parent = nullptr);
 
-QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  [[nodiscard]] int value() const;
 
-QImage resizeToFill(
-    const QImage& image,
-    QSize targetSize,
-    int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  void updateDirectionLabels(AspectFillDimension axis);
 
-QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
+ public slots:
+  void setValue(int value);
+  void setMaximum(int maximum);
+  void setConfiguration(int maximum, AspectFillDimension axis);
 
-QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
+ signals:
+  void valueChanged(int value);
 
+ private:
+  QPushButton* m_leftButton;
+  QPushButton* m_centerButton;
+  QPushButton* m_rightButton;
+
+  QSlider* m_slider;
+  QSpinBox* m_spinBox;
+};

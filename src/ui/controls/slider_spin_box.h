@@ -25,48 +25,29 @@
 
 #pragma once
 
-#include "algorithms/scale/scaling_algorithm.h"
+#include <QWidget>
 
-#include <QImage>
+class QLabel;
+class QSlider;
+class QSpinBox;
 
-enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
+class SliderSpinBox : public QWidget {
+  Q_OBJECT
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset = 0
-);
+ public:
+  explicit SliderSpinBox(QString label, QWidget* parent = nullptr);
 
-QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+  [[nodiscard]] int value() const;
 
-QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ public slots:
+  void setValue(int value);
+  void setRange(int minimum, int maximum);
 
-QImage resizeToFill(
-    const QImage& image,
-    QSize targetSize,
-    int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
-);
+ signals:
+  void valueChanged(int value);
 
-QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
-
-QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
-);
-
+ private:
+  QLabel* m_title;
+  QSpinBox* m_spinBox;
+  QSlider* m_slider;
+};

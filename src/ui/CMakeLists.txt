@@ -1,4 +1,19 @@
 qt_add_library(wakana_pixel_ui STATIC
+  controls/crop_position_selector.cpp
+  controls/crop_position_selector.h
+
+  controls/image_size_selector.cpp
+  controls/image_size_selector.h
+
+  controls/resize_mode_selector.cpp
+  controls/resize_mode_selector.h
+
+  controls/rounding_mode_selector.cpp
+  controls/rounding_mode_selector.h
+
+  controls/slider_spin_box.cpp
+  controls/slider_spin_box.h
+
   image_view.cpp
   image_view.h
 
