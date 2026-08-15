@@ -39,6 +39,10 @@ class ImageDocument {
 
   [[nodiscard]] const QImage& originalImage() const noexcept;
 
+  [[nodiscard]] const QImage& scaledImage() const noexcept;
+  void setScaledImage(QImage image) noexcept;
+
  private:
   QImage m_originalImage;
+  QImage m_scaledImage;
 };

@@ -25,9 +25,14 @@
 
 #pragma once
 
+#include "algorithms/scale/nearest_neighbor_scaler.h"
+#include "control_types/resize_control_type.h"
 #include "image/image_document.h"
+#include "processing/resize.h"
 
 #include <QObject>
+
+#include <mutex>
 
 class ProcessingController final : public QObject {
   Q_OBJECT
@@ -39,9 +44,28 @@ class ProcessingController final : public QObject {
   void openImage(const QString& filePath);
   void saveImage(const QString& filePath);
 
+  void resizeImage(ResizeParams params);
+
  signals:
-  void imageLoaded(const QImage& image);
+  void imageLoaded(bool isLoaded);
+
+  void imageReadyDisplay(const QImage& image);
+
+  void requestResize();
+  void updateResizeControlValue(QSize size);
+  void updateResizeControlStatus(ResizeControlStatus status);
+  void updateResizeParamsLimit(ResizeParamsLimit status);
 
  private:
+  void startResize(ResizeParams params);
+  void completeResize();
+
+ private:
+  std::mutex mtx;
+
   ImageDocument m_imageDocument;
+  ScalingAlgorithm* m_scaler;
+
+  bool m_isStartResize  = false;
+  bool isResizeRequired = false;
 };

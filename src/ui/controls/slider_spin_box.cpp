@@ -27,11 +27,11 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QSignalBlocker>
 #include <QSlider>
 #include <QSpinBox>
 #include <QString>
 #include <QVBoxLayout>
- #include <QSignalBlocker>
 
 SliderSpinBox::SliderSpinBox(QString label, QWidget* parent)
     : QWidget(parent),
@@ -42,11 +42,15 @@ SliderSpinBox::SliderSpinBox(QString label, QWidget* parent)
   QHBoxLayout* header = new QHBoxLayout();
   header->addWidget(m_title);
   header->addWidget(m_spinBox);
+  header->setSpacing(0);
+  header->setContentsMargins(0, 0, 0, 0);
 
   // Layout
   QVBoxLayout* layout = new QVBoxLayout(this);
   layout->addLayout(header);
   layout->addWidget(m_slider);
+  layout->setContentsMargins(0, 0, 0, 0);
+
 
   connect(m_slider, &QSlider::valueChanged, m_spinBox, &QSpinBox::setValue);
   connect(m_spinBox, &QSpinBox::valueChanged, m_slider, &QSlider::setValue);

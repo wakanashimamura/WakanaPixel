@@ -31,54 +31,48 @@
 #include <QPoint>
 #include <QRect>
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset
-) {
-  switch (mode) {
+QImage resize(const QImage& image, const ScalingAlgorithm& scaler, ResizeParams params) {
+  if (image.isNull() || params.size.isEmpty()) {
+    return {};
+  }
+
+  switch (params.resizeMode) {
     case ResizeMode::Original:
-      if (image.size().width() > size.width() && image.size().height() > size.height()) {
-        return resizeToFit(image, size, scaler, scalingParams);
+      if (image.size().width() > params.size.width() &&
+          image.size().height() > params.size.height()) {
+        return resizeToFit(image, params.size, scaler, params.roundingMode);
       }
       return image;
     case ResizeMode::Exact:
-      return scaler->scale(image, size, scalingParams);
+      return scaler.scale(image, params.size, params.roundingMode);
 
     case ResizeMode::Fit:
-      return resizeToFitWithPadding(image, size, scaler, scalingParams);
+      return resizeToFitWithPadding(image, params.size, scaler, params.roundingMode);
 
     case ResizeMode::Fill:
-      return resizeToFill(image, size, cropOffset, scaler, scalingParams);
+      return resizeToFill(image, params.size, params.cropOffset, scaler, params.roundingMode);
 
     case ResizeMode::Width:
-      return resizeByWidth(image, size.width(), scaler, scalingParams);
+      return resizeByWidth(image, params.size.width(), scaler, params.roundingMode);
 
     case ResizeMode::Height:
-      return resizeByHeight(image, size.height(), scaler, scalingParams);
+      return resizeByHeight(image, params.size.height(), scaler, params.roundingMode);
   }
+
+  return {};
 }
 
 QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
+    const QImage& image, QSize size, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 ) {
-  QSize newSize      = calculateAspectFitSize(image.size(), targetSize);
-  QImage scaledImage = scaler->scale(image, newSize, scalingParams);
+  QSize newSize      = calculateAspectFitSize(image.size(), size);
+  QImage scaledImage = scaler.scale(image, newSize, roundingMode);
 
-  QImage dstImage(targetSize, image.format());
+  QImage dstImage(size, image.format());
   dstImage.fill(Qt::black);
   QPainter painter(&dstImage);
 
-  QPoint point(
-      (targetSize.width() - newSize.width()) / 2,
-      (targetSize.height() - newSize.height()) / 2
-  );
+  QPoint point((size.width() - newSize.width()) / 2, (size.height() - newSize.height()) / 2);
 
   painter.drawImage(point, scaledImage);
   painter.end();
@@ -87,42 +81,33 @@ QImage resizeToFitWithPadding(
 }
 
 QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
+    const QImage& image, QSize size, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 ) {
-  QSize newSize = calculateAspectFitSize(image.size(), targetSize);
-  return scaler->scale(image, newSize, scalingParams);
+  QSize newSize = calculateAspectFitSize(image.size(), size);
+  return scaler.scale(image, newSize, roundingMode);
 }
 
 QImage resizeToFill(
     const QImage& image,
-    QSize targetSize,
+    QSize size,
     int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
+    const ScalingAlgorithm& scaler,
+    const RoundingMode roundingMode
 ) {
-  AspectFillResult result = calculateAspectFillSize(image.size(), targetSize);
+  AspectFillResult result     = calculateAspectFillSize(image.size(), size);
+  const int boundedCropOffset = std::clamp(cropOffset, 0, result.maxCropOffset);
+  QImage scaledImage          = scaler.scale(image, result.size, roundingMode);
 
-  Q_ASSERT_X(
-      cropOffset <= result.maxCropOffset,
-      Q_FUNC_INFO,
-      "Crop offset exceeds the maximum value."
-  );
-
-  QImage scaledImage = scaler->scale(image, result.size, scalingParams);
-
-  QImage dstImage(targetSize, image.format());
+  QImage dstImage(size, image.format());
   dstImage.fill(Qt::black);
 
   QPainter painter(&dstImage);
 
   QRect rect(
-      result.fillReference == AspectFillDimension::Width ? 0 : cropOffset,
-      result.fillReference == AspectFillDimension::Height ? 0 : cropOffset,
-      targetSize.width(),
-      targetSize.height()
+      result.fillReference == AspectFillDimension::Width ? 0 : boundedCropOffset,
+      result.fillReference == AspectFillDimension::Height ? 0 : boundedCropOffset,
+      size.width(),
+      size.height()
   );
 
   painter.drawImage(QPoint(), scaledImage, rect);
@@ -132,15 +117,15 @@ QImage resizeToFill(
 }
 
 QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+    const QImage& image, int width, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 ) {
-  QSize newSize = calculateHeightByWidth(image.size(), width);
-  return scaler->scale(image, newSize, scalingParams);
+  QSize newSize = calculateByWidth(image.size(), width);
+  return scaler.scale(image, newSize, roundingMode);
 }
 
 QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+    const QImage& image, int height, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 ) {
-  QSize newSize = calculateWidthByHeight(image.size(), height);
-  return scaler->scale(image, newSize, scalingParams);
+  QSize newSize = calculateByHeight(image.size(), height);
+  return scaler.scale(image, newSize, roundingMode);
 }

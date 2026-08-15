@@ -41,12 +41,11 @@ class CropPositionSelector : public QGroupBox {
 
   [[nodiscard]] int value() const;
 
-  void updateDirectionLabels(AspectFillDimension axis);
+  void setAxis(AspectFillDimension axis);
+  void setMaximum(int maximum);
 
  public slots:
   void setValue(int value);
-  void setMaximum(int maximum);
-  void setConfiguration(int maximum, AspectFillDimension axis);
 
  signals:
   void valueChanged(int value);

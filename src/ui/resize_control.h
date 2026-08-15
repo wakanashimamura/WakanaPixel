@@ -25,12 +25,36 @@
 
 #pragma once
 
-#include "common/wmath.h"
+#include <QGroupBox>
 
-struct ScalingParams {
-  virtual ~ScalingParams() = default;
-};
+#include <control_types/resize_control_type.h>
 
-struct NearestNeighborParams : public ScalingParams {
-  RoundingMode roundingMode = RoundingMode::Round;
+class CropPositionSelector;
+class ImageSizeSelector;
+class ResizeModeSelector;
+class RoundingModeSelector;
+struct ResizeParams;
+
+class ResizeControl : public QGroupBox {
+  Q_OBJECT
+
+ public:
+  explicit ResizeControl(QWidget* parent = nullptr);
+
+  ResizeParams value();
+
+ public slots:
+  void setSize(QSize size);
+
+  void setStatus(ResizeControlStatus status);
+  void setLimit(ResizeParamsLimit limit);
+
+ signals:
+  void valueChanged(ResizeParams params);
+
+ private:
+  ResizeModeSelector* m_mode;
+  ImageSizeSelector* m_size;
+  CropPositionSelector* m_crop;
+  RoundingModeSelector* m_rounding;
 };

@@ -38,12 +38,6 @@ class ImageSizeSelector : public QGroupBox {
 
   [[nodiscard]] QSize value() const;
 
-  void setWidthVisible(bool visible);
-  bool isWidthVisible() const;
-
-  void setHeightVisible(bool visible);
-  bool isHeightVisible() const;
-
   void setWidthEnabled(bool enabled);
   bool isWidthEnabled() const;
 
@@ -60,8 +54,10 @@ class ImageSizeSelector : public QGroupBox {
   void valueChanged(QSize value);
 
  private:
-  void updateVisibility();
   void updateEnabled();
+
+  bool m_widthEnabled  = true;
+  bool m_heightEnabled = true;
 
   SliderSpinBox* m_width;
   SliderSpinBox* m_height;

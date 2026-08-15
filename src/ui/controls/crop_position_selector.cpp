@@ -33,13 +33,15 @@
 #include <QVBoxLayout>
 
 CropPositionSelector::CropPositionSelector(QWidget* parent)
-    : QGroupBox(parent),
+    : QGroupBox("Crop", parent),
       m_leftButton(new QPushButton("Left", this)),
       m_centerButton(new QPushButton("Center", this)),
       m_rightButton(new QPushButton("Right", this)),
-      m_slider(new QSlider(this)),
+      m_slider(new QSlider(Qt::Horizontal, this)),
       m_spinBox(new QSpinBox(this)) {
-  QVBoxLayout* lauout = new QVBoxLayout(this);
+  QVBoxLayout* layout = new QVBoxLayout(this);
+
+  m_spinBox->setFixedWidth(100);
 
   QHBoxLayout* btnLayout = new QHBoxLayout;
   btnLayout->addWidget(m_leftButton);
@@ -50,8 +52,8 @@ CropPositionSelector::CropPositionSelector(QWidget* parent)
   selectorLayout->addWidget(m_slider);
   selectorLayout->addWidget(m_spinBox);
 
-  lauout->addLayout(btnLayout);
-  lauout->addLayout(selectorLayout);
+  layout->addLayout(btnLayout);
+  layout->addLayout(selectorLayout);
 
   connect(m_slider, &QSlider::valueChanged, m_spinBox, &QSpinBox::setValue);
   connect(m_spinBox, &QSpinBox::valueChanged, m_slider, &QSlider::setValue);
@@ -62,7 +64,7 @@ CropPositionSelector::CropPositionSelector(QWidget* parent)
   });
 
   connect(m_centerButton, &QPushButton::clicked, this, [this]() {
-    m_slider->setValue(m_slider->maximum() / 2);
+    m_slider->setValue(std::round(m_slider->maximum() / 2.0));
   });
 
   connect(m_rightButton, &QPushButton::clicked, this, [this]() {
@@ -74,7 +76,7 @@ int CropPositionSelector::value() const {
   return m_slider->value();
 }
 
-void CropPositionSelector::updateDirectionLabels(AspectFillDimension axis) {
+void CropPositionSelector::setAxis(AspectFillDimension axis) {
   switch (axis) {
     case AspectFillDimension::Width:
       m_leftButton->setText("Top");
@@ -101,9 +103,4 @@ void CropPositionSelector::setValue(int value) {
 void CropPositionSelector::setMaximum(int maximum) {
   m_slider->setMaximum(maximum);
   m_spinBox->setMaximum(maximum);
-}
-
-void CropPositionSelector::setConfiguration(int maximum, AspectFillDimension axis) {
-  setMaximum(maximum);
-  updateDirectionLabels(axis);
 }

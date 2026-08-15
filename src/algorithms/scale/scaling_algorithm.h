@@ -25,8 +25,8 @@
 
 #pragma once
 
+#include "common/wmath.h"
 #include "scaling_algorithm_type.h"
-#include "scaling_params.h"
 
 #include <QImage>
 #include <QSize>
@@ -37,8 +37,8 @@ class ScalingAlgorithm {
   virtual ~ScalingAlgorithm() = default;
 
   [[nodiscard]] virtual QImage scale(
-      const QImage& image, QSize size, const ScalingParams* params
-  ) = 0;
+      const QImage& image, QSize size, RoundingMode roundingMode
+  ) const = 0;
 
   [[nodiscard]] virtual ScalingAlgorithmType type() const = 0;
   [[nodiscard]] virtual QString name() const              = 0;

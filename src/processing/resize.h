@@ -31,42 +31,35 @@
 
 enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
 
-QImage resize(
-    const QImage& image,
-    QSize size,
-    ResizeMode mode,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams,
-    int cropOffset = 0
-);
+struct ResizeParams {
+  QSize size;
+  ResizeMode resizeMode;
+  RoundingMode roundingMode;
+  int cropOffset = 0;
+};
+
+QImage resize(const QImage& image, const ScalingAlgorithm& scaler, ResizeParams params);
 
 QImage resizeToFitWithPadding(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
+    const QImage& image, QSize size, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 );
 
 QImage resizeToFit(
-    const QImage& image,
-    QSize targetSize,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
+    const QImage& image, QSize size, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 );
 
 QImage resizeToFill(
     const QImage& image,
-    QSize targetSize,
+    QSize size,
     int cropOffset,
-    ScalingAlgorithm* scaler,
-    const ScalingParams* scalingParams
+    const ScalingAlgorithm& scaler,
+    const RoundingMode roundingMode
 );
 
 QImage resizeByWidth(
-    const QImage& image, int width, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+    const QImage& image, int width, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 );
 
 QImage resizeByHeight(
-    const QImage& image, int height, ScalingAlgorithm* scaler, const ScalingParams* scalingParams
+    const QImage& image, int height, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
 );
-

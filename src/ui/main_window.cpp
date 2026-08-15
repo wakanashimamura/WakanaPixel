@@ -27,6 +27,7 @@
 
 #include "application/processing_controller.h"
 #include "image_view.h"
+#include "resize_control.h"
 #include "ui_main_window.h"
 
 #include <QFileDialog>
@@ -36,6 +37,9 @@ MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent),
       m_ui(new Ui::MainWindow) {
   m_ui->setupUi(this);
+
+  m_ui->buttonSaveImage->setEnabled(false);
+  m_ui->resizeControl->setEnabled(false);
 
   connect(m_ui->buttonOpenImage, &QPushButton::clicked, this, &MainWindow::selectImageToOpen);
   connect(m_ui->buttonSaveImage, &QPushButton::clicked, this, &MainWindow::selectImageSavePath);
@@ -48,7 +52,48 @@ MainWindow::~MainWindow() {
 void MainWindow::setController(ProcessingController* controller) {
   m_controller = controller;
 
-  connect(m_controller, &ProcessingController::imageLoaded, m_ui->imageView, &ImageView::setImage);
+  connect(m_controller, &ProcessingController::imageLoaded, this, [this](bool isLoaded) {
+    m_ui->buttonSaveImage->setEnabled(isLoaded);
+    m_ui->resizeControl->setEnabled(isLoaded);
+  });
+
+  connect(
+      m_controller,
+      &ProcessingController::imageReadyDisplay,
+      m_ui->imageView,
+      &ImageView::setImage
+  );
+
+  connect(
+      m_controller,
+      &ProcessingController::updateResizeControlValue,
+      m_ui->resizeControl,
+      [this](QSize size) { m_ui->resizeControl->setSize(size); }
+  );
+
+  connect(
+      m_controller,
+      &ProcessingController::updateResizeControlStatus,
+      m_ui->resizeControl,
+      &ResizeControl::setStatus
+  );
+  connect(
+      m_controller,
+      &ProcessingController::updateResizeParamsLimit,
+      m_ui->resizeControl,
+      &ResizeControl::setLimit
+  );
+
+  connect(
+      m_ui->resizeControl,
+      &ResizeControl::valueChanged,
+      m_controller,
+      &ProcessingController::resizeImage
+  );
+
+  connect(m_controller, &ProcessingController::requestResize, this, [this]() {
+    m_controller->resizeImage(m_ui->resizeControl->value());
+  });
 }
 
 void MainWindow::selectImageToOpen() {

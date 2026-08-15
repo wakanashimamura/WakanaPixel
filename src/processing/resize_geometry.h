@@ -39,6 +39,5 @@ QSize calculateAspectFitSize(const QSize& sourceSize, const QSize& bounds);
 
 AspectFillResult calculateAspectFillSize(const QSize& sourceSize, const QSize& bounds);
 
-QSize calculateWidthByHeight(const QSize& sourceSize, int height);
-
-QSize calculateHeightByWidth(const QSize& sourceSize, int width);
+QSize calculateByWidth(const QSize& sourceSize, int width);
+QSize calculateByHeight(const QSize& sourceSize, int height);

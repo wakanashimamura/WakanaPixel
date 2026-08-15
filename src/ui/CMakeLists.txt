@@ -20,6 +20,9 @@ qt_add_library(wakana_pixel_ui STATIC
   main_window.cpp
   main_window.h
   main_window.ui
+
+  resize_control.cpp
+  resize_control.h
 )
 
 target_link_libraries(wakana_pixel_ui PUBLIC

@@ -29,7 +29,9 @@
 
 class NearestNeighborScaler : public ScalingAlgorithm {
  public:
-  [[nodiscard]] QImage scale(const QImage& image, QSize size, const ScalingParams* params) override;
+  [[nodiscard]] QImage scale(
+      const QImage& image, QSize size, RoundingMode roundingMode
+  ) const override;
 
   [[nodiscard]] ScalingAlgorithmType type() const override;
   [[nodiscard]] QString name() const override;

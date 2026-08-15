@@ -22,25 +22,26 @@
 // Repository: https://github.com/wakanashimamura/WakanaPixel
 //
 // ================================================================================================
-// __          __   _                     _____ _          _
-// \ \        / /  | |                   |  __ (_)        | |
-//  \ \  /\  / /_ _| | ____ _ _ __   __ _| |__) |__  _____| |
-//   \ \/  \/ / _` | |/ / _` | '_ \ / _` |  ___/ \ \/ / _ \ |
-//    \  /\  / (_| |   < (_| | | | | (_| | |   | |>  <  __/ |
-//     \/  \/ \__,_|_|\_\__,_|_| |_|\__,_|_|   |_/_/\_\___|_|
-//
-// ================================================================================================
 
-#include "application/processing_controller.h"
-#include "ui/main_window.h"
+#pragma once
 
-#include <QApplication>
+#include "application/app_config.h"
+#include "processing/resize_geometry.h"
 
-int main(int argc, char* argv[]) {
-  QApplication application(argc, argv);
-  ProcessingController controller;
-  MainWindow window;
-  window.setController(&controller);
-  window.show();
-  return QApplication::exec();
-}
+struct ResizeControlStatus {
+  bool widthEnabled  = true;
+  bool heightEnabled = true;
+
+  bool cropVisible             = true;
+  AspectFillDimension axisCrop = AspectFillDimension::Height;
+};
+
+struct ResizeParamsLimit {
+  int minWidth = k_minResizeImageSize;
+  int maxWidth = k_maxResizeImageSize;
+
+  int minHeight = k_minResizeImageSize;
+  int maxHeight = k_maxResizeImageSize;
+
+  int maxCropOffset = 0;
+};

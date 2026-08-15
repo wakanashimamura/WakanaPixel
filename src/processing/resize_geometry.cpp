@@ -25,6 +25,8 @@
 
 #include "resize_geometry.h"
 
+#include <algorithm>
+#include <cmath>
 #include <limits>
 
 QSize calculateAspectFitSize(const QSize& sourceSize, const QSize& bounds) {
@@ -53,22 +55,22 @@ AspectFillResult calculateAspectFillSize(const QSize& sourceSize, const QSize& b
   AspectFillResult result;
 
   if (srcRatio > tgtRatio) {
-    result.size          = calculateWidthByHeight(sourceSize, bounds.height());
+    result.size          = calculateByHeight(sourceSize, bounds.height());
     result.fillReference = AspectFillDimension::Height;
     result.maxCropOffset = result.size.width() - bounds.width();
   } else {
     result.fillReference = AspectFillDimension::Width;
-    result.size          = calculateHeightByWidth(sourceSize, bounds.width());
+    result.size          = calculateByWidth(sourceSize, bounds.width());
     result.maxCropOffset = result.size.height() - bounds.height();
   }
 
   return result;
 }
 
-QSize calculateWidthByHeight(const QSize& sourceSize, int height) {
-  return calculateAspectFitSize(sourceSize, QSize(std::numeric_limits<int>::max(), height));
+QSize calculateByWidth(const QSize& sourceSize, int width) {
+  return calculateAspectFitSize(sourceSize, QSize(width, std::numeric_limits<int>::max()));
 }
 
-QSize calculateHeightByWidth(const QSize& sourceSize, int width) {
-  return calculateAspectFitSize(sourceSize, QSize(width, std::numeric_limits<int>::max()));
+QSize calculateByHeight(const QSize& sourceSize, int height) {
+  return calculateAspectFitSize(sourceSize, QSize(std::numeric_limits<int>::max(), height));
 }

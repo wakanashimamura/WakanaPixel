@@ -66,5 +66,5 @@ enum class RoundingMode { Floor, Round, Ceil };
     return 0;
   }
 
-  return value;
+  return static_cast<uint8_t>(value);
 }

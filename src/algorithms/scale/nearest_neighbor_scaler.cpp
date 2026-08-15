@@ -29,20 +29,14 @@
 
 #include <QtAssert>
 
-QImage NearestNeighborScaler::scale(const QImage& image, QSize size, const ScalingParams* params) {
+QImage NearestNeighborScaler::scale(
+    const QImage& image, QSize size, RoundingMode roundingMode
+) const {
   Q_ASSERT_X(!image.isNull(), Q_FUNC_INFO, "Image that was sent is empty..");
 
   if (size.isEmpty()) {
     return QImage();
   }
-
-  const NearestNeighborParams* specificParams = dynamic_cast<const NearestNeighborParams*>(params);
-
-  Q_ASSERT_X(
-      specificParams != nullptr,
-      Q_FUNC_INFO,
-      "Invalid scaling parameters type. Expected NearestNeighborParams."
-  );
 
   QImage result(size, image.format());
 
@@ -57,15 +51,12 @@ QImage NearestNeighborScaler::scale(const QImage& image, QSize size, const Scali
   pixelsX.reserve(size.width());
   for (int x = 0; x < size.width(); ++x) {
     // Map X coordinates to source pixels
-    pixelsX.push_back(
-        std::clamp(round(x * scaleX, specificParams->roundingMode), 0, imageBits.width() - 1)
-    );
+    pixelsX.push_back(std::clamp(round(x * scaleX, roundingMode), 0, imageBits.width() - 1));
   }
 
   for (int y = 0; y < size.height(); ++y) {
     // Map Y coordinates to source pixels
-    int pixelY =
-        std::clamp(round(y * scaleY, specificParams->roundingMode), 0, imageBits.height() - 1);
+    int pixelY = std::clamp(round(y * scaleY, roundingMode), 0, imageBits.height() - 1);
 
     for (int x = 0; x < size.width(); ++x) {
       resultBits[y][x] = imageBits[pixelY][pixelsX[x]];

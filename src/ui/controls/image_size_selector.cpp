@@ -30,7 +30,7 @@
 #include <QVBoxLayout>
 
 ImageSizeSelector::ImageSizeSelector(QWidget* parent)
-    : QGroupBox("Size", this),
+    : QGroupBox("Size", parent),
       m_width(new SliderSpinBox("Width", this)),
       m_height(new SliderSpinBox("Height", this)) {
   QVBoxLayout* layout = new QVBoxLayout(this);
@@ -46,44 +46,35 @@ QSize ImageSizeSelector::value() const {
   return QSize(m_width->value(), m_height->value());
 }
 
-void ImageSizeSelector::setWidthVisible(bool visible) {
-  m_width->setVisible(visible);
-  updateVisibility();
-}
-
-bool ImageSizeSelector::isWidthVisible() const {
-  return m_width->isVisible();
-}
-
-void ImageSizeSelector::setHeightVisible(bool visible) {
-  m_height->setVisible(visible);
-  updateVisibility();
-}
-
-bool ImageSizeSelector::isHeightVisible() const {
-  return m_height->isVisible();
-}
-
 void ImageSizeSelector::setWidthEnabled(bool enabled) {
+  m_widthEnabled = enabled;
   m_width->setEnabled(enabled);
   updateEnabled();
 }
 
 bool ImageSizeSelector::isWidthEnabled() const {
-  return m_width->isEnabled();
+  return m_widthEnabled;
 }
 
 void ImageSizeSelector::setHeightEnabled(bool enabled) {
+  m_heightEnabled = enabled;
   m_height->setEnabled(enabled);
   updateEnabled();
 }
 
 bool ImageSizeSelector::isHeightEnabled() const {
-  return m_height->isEnabled();
+  return m_heightEnabled;
 }
 
 void ImageSizeSelector::setValue(QSize value) {
-  m_width->setValue(value.width());
+  const QSignalBlocker blockWidth(m_width);
+  const QSignalBlocker blockHeight(m_height);
+
+
+  m_width->setValue(value.width()); 
+  m_height->setValue(value.height());
+
+  emit valueChanged(value);
 }
 
 void ImageSizeSelector::setWidthRange(int minimum, int maximum) {
@@ -94,10 +85,6 @@ void ImageSizeSelector::setHeightRange(int minimum, int maximum) {
   m_height->setRange(minimum, maximum);
 }
 
-void ImageSizeSelector::updateVisibility() {
-  setVisible(m_width->isVisible() || m_height->isVisible());
-}
-
 void ImageSizeSelector::updateEnabled() {
-  setEnabled(m_width->isEnabled() || m_height->isEnabled());
+  setEnabled(m_widthEnabled || m_heightEnabled);
 }

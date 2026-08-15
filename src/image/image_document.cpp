@@ -27,17 +27,26 @@
 
 bool ImageDocument::load(const QString& filePath) {
   QImage image;
-  if (filePath.isEmpty() || !image.load(filePath)) {
+  if (filePath.isEmpty()) {
+    return false;
+  }
+
+  if (!image.load(filePath)) {
     return false;
   }
 
   m_originalImage = image.convertToFormat(QImage::Format_RGB32);
+  m_scaledImage   = m_originalImage;
 
   return true;
 }
 
 bool ImageDocument::save(const QString& filePath) const {
-  return !filePath.isEmpty() && m_originalImage.save(filePath);
+  if (filePath.isEmpty()) {
+    return false;
+  }
+
+  return m_scaledImage.save(filePath);
 }
 
 bool ImageDocument::isNull() const noexcept {
@@ -46,4 +55,12 @@ bool ImageDocument::isNull() const noexcept {
 
 const QImage& ImageDocument::originalImage() const noexcept {
   return m_originalImage;
+}
+
+const QImage& ImageDocument::scaledImage() const noexcept {
+  return m_scaledImage;
+}
+
+void ImageDocument::setScaledImage(QImage image) noexcept {
+  m_scaledImage = std::move(image);
 }

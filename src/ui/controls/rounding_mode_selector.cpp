@@ -46,11 +46,11 @@ RoundingModeSelector::RoundingModeSelector(QWidget* parent)
   m_buttonGroup->addButton(roundButton, static_cast<int>(RoundingMode::Round));
   m_buttonGroup->addButton(ceilButton, static_cast<int>(RoundingMode::Ceil));
 
+  m_buttonGroup->button(static_cast<int>(m_mode))->setChecked(true);
+
   connect(m_buttonGroup, &QButtonGroup::idClicked, this, [this](int id) {
     setMode(static_cast<RoundingMode>(id));
   });
-
-  setMode(m_mode);
 }
 
 RoundingMode RoundingModeSelector::mode() const {
@@ -61,6 +61,7 @@ void RoundingModeSelector::setMode(RoundingMode mode) {
   if (m_mode == mode) {
     return;
   }
+
   m_mode = mode;
 
   m_buttonGroup->button(static_cast<int>(m_mode))->setChecked(true);

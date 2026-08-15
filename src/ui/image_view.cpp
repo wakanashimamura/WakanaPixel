@@ -79,7 +79,7 @@ void ImageView::zoomOut() {
   if (m_imageItem->pixmap().isNull()) {
     return;
   }
-  const double nextScale = transform().m11() * k_zoomFactor;
+  const double nextScale = transform().m11() * (1.0 / k_zoomFactor);
 
   if (nextScale > k_minimumScale) {
     QGraphicsView::scale(1.0 / k_zoomFactor, 1.0 / k_zoomFactor);

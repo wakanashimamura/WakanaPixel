@@ -22,25 +22,8 @@
 // Repository: https://github.com/wakanashimamura/WakanaPixel
 //
 // ================================================================================================
-// __          __   _                     _____ _          _
-// \ \        / /  | |                   |  __ (_)        | |
-//  \ \  /\  / /_ _| | ____ _ _ __   __ _| |__) |__  _____| |
-//   \ \/  \/ / _` | |/ / _` | '_ \ / _` |  ___/ \ \/ / _ \ |
-//    \  /\  / (_| |   < (_| | | | | (_| | |   | |>  <  __/ |
-//     \/  \/ \__,_|_|\_\__,_|_| |_|\__,_|_|   |_/_/\_\___|_|
-//
-// ================================================================================================
 
-#include "application/processing_controller.h"
-#include "ui/main_window.h"
+#pragma once
 
-#include <QApplication>
-
-int main(int argc, char* argv[]) {
-  QApplication application(argc, argv);
-  ProcessingController controller;
-  MainWindow window;
-  window.setController(&controller);
-  window.show();
-  return QApplication::exec();
-}
+constexpr int k_minResizeImageSize = 8;
+constexpr int k_maxResizeImageSize = 1024;
