@@ -39,6 +39,12 @@ CropPositionSelector::CropPositionSelector(QWidget* parent)
       m_rightButton(new QPushButton("Right", this)),
       m_slider(new QSlider(Qt::Horizontal, this)),
       m_spinBox(new QSpinBox(this)) {
+  m_leftButton->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+  m_centerButton->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+  m_rightButton->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+  m_slider->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+  m_spinBox->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+
   QVBoxLayout* layout = new QVBoxLayout(this);
 
   m_spinBox->setFixedWidth(100);

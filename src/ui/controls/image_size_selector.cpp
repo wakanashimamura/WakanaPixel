@@ -25,21 +25,34 @@
 
 #include "image_size_selector.h"
 
+#include "application/app_config.h"
+#include "preset_resize_dimensions.h"
 #include "slider_spin_box.h"
 
 #include <QVBoxLayout>
 
 ImageSizeSelector::ImageSizeSelector(QWidget* parent)
     : QGroupBox("Size", parent),
+      m_preset(new PresetResizeDimensions(this)),
       m_width(new SliderSpinBox("Width", this)),
       m_height(new SliderSpinBox("Height", this)) {
   QVBoxLayout* layout = new QVBoxLayout(this);
 
+  layout->addWidget(m_preset);
   layout->addWidget(m_width);
   layout->addWidget(m_height);
 
-  connect(m_width, &SliderSpinBox::valueChanged, this, [this] { emit valueChanged(value()); });
-  connect(m_height, &SliderSpinBox::valueChanged, this, [this] { emit valueChanged(value()); });
+  m_width->setRange(k_minResizeImageSize, k_maxResizeImageSize);
+  m_height->setRange(k_minResizeImageSize, k_maxResizeImageSize);
+  setValue(m_preset->value());
+
+  connect(m_preset, &PresetResizeDimensions::valueChanged, this, [this](QSize value) {
+    if (!value.isEmpty())
+      setValue(value);
+  });
+
+  connect(m_width, &SliderSpinBox::valueChanged, this, &ImageSizeSelector::valueChanged_);
+  connect(m_height, &SliderSpinBox::valueChanged, this, &ImageSizeSelector::valueChanged_);
 }
 
 QSize ImageSizeSelector::value() const {
@@ -70,8 +83,7 @@ void ImageSizeSelector::setValue(QSize value) {
   const QSignalBlocker blockWidth(m_width);
   const QSignalBlocker blockHeight(m_height);
 
-
-  m_width->setValue(value.width()); 
+  m_width->setValue(value.width());
   m_height->setValue(value.height());
 
   emit valueChanged(value);
@@ -87,4 +99,11 @@ void ImageSizeSelector::setHeightRange(int minimum, int maximum) {
 
 void ImageSizeSelector::updateEnabled() {
   setEnabled(m_widthEnabled || m_heightEnabled);
+}
+
+void ImageSizeSelector::valueChanged_() {
+  QSignalBlocker blocker(m_preset);
+  m_preset->setCustom();
+
+  emit valueChanged(value());
 }

@@ -25,44 +25,25 @@
 
 #pragma once
 
-#include <QGroupBox>
 #include <QSize>
+#include <QWidget>
 
-class PresetResizeDimensions;
-class SliderSpinBox;
+class QComboBox;
 
-class ImageSizeSelector : public QGroupBox {
+class PresetResizeDimensions : public QWidget {
   Q_OBJECT
 
  public:
-  explicit ImageSizeSelector(QWidget* parent = nullptr);
+  explicit PresetResizeDimensions(QWidget* parent = nullptr);
 
   [[nodiscard]] QSize value() const;
 
-  void setWidthEnabled(bool enabled);
-  bool isWidthEnabled() const;
-
-  void setHeightEnabled(bool enabled);
-  bool isHeightEnabled() const;
-
  public slots:
-  void setValue(QSize value);
-
-  void setWidthRange(int minimum, int maximum);
-  void setHeightRange(int minimum, int maximum);
+  void setCustom();
 
  signals:
   void valueChanged(QSize value);
 
  private:
-  void updateEnabled();
-  void valueChanged_();
-
-  bool m_widthEnabled  = true;
-  bool m_heightEnabled = true;
-
-  PresetResizeDimensions* m_preset;
-
-  SliderSpinBox* m_width;
-  SliderSpinBox* m_height;
+  QComboBox* m_comboBox;
 };

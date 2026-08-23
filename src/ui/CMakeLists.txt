@@ -5,6 +5,9 @@ qt_add_library(wakana_pixel_ui STATIC
   controls/image_size_selector.cpp
   controls/image_size_selector.h
 
+  controls/preset_resize_dimensions.cpp
+  controls/preset_resize_dimensions.h
+
   controls/resize_mode_selector.cpp
   controls/resize_mode_selector.h
 

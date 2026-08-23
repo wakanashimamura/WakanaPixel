@@ -43,10 +43,6 @@ void ProcessingController::openImage(const QString& filePath) {
   }
 
   emit imageLoaded(true);
-  emit updateResizeControlValue(calculateAspectFitSize(
-      m_imageDocument.originalImage().size(),
-      {k_maxResizeImageSize, k_maxResizeImageSize}
-  ));
   emit requestResize();
 }
 
