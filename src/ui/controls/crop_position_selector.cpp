@@ -39,15 +39,14 @@ CropPositionSelector::CropPositionSelector(QWidget* parent)
       m_rightButton(new QPushButton("Right", this)),
       m_slider(new QSlider(Qt::Horizontal, this)),
       m_spinBox(new QSpinBox(this)) {
-  m_leftButton->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
-  m_centerButton->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
-  m_rightButton->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
-  m_slider->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
-  m_spinBox->sizePolicy().setHorizontalPolicy(QSizePolicy::Maximum);
+  m_leftButton->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+  m_centerButton->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+  m_rightButton->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+
+  m_spinBox->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+  m_spinBox->setMaximumWidth(90);
 
   QVBoxLayout* layout = new QVBoxLayout(this);
-
-  m_spinBox->setFixedWidth(100);
 
   QHBoxLayout* btnLayout = new QHBoxLayout;
   btnLayout->addWidget(m_leftButton);
@@ -82,16 +81,26 @@ int CropPositionSelector::value() const {
   return m_slider->value();
 }
 
-void CropPositionSelector::setAxis(AspectFillDimension axis) {
+void CropPositionSelector::setAxis(CropAxis axis) {
   switch (axis) {
-    case AspectFillDimension::Width:
+    case CropAxis::Horizontal:
+      setEnabled(true);
+      m_leftButton->setText("Left");
+      m_rightButton->setText("Right");
+      break;
+
+      break;
+    case CropAxis::Vertical:
+      setEnabled(true);
       m_leftButton->setText("Top");
       m_rightButton->setText("Bottom");
       break;
 
-    case AspectFillDimension::Height:
-      m_leftButton->setText("Left");
-      m_rightButton->setText("Right");
+    case CropAxis::None:
+      setEnabled(false);
+      break;
+
+    default:
       break;
   }
 }

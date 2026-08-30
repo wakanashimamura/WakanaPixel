@@ -25,7 +25,7 @@
 
 #pragma once
 
-#include "processing/resize_geometry.h"
+#include "processing/resize_types.h"
 
 #include <QGroupBox>
 
@@ -41,7 +41,7 @@ class CropPositionSelector : public QGroupBox {
 
   [[nodiscard]] int value() const;
 
-  void setAxis(AspectFillDimension axis);
+  void setAxis(CropAxis axis);
   void setMaximum(int maximum);
 
  public slots:

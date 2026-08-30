@@ -28,7 +28,7 @@
 #include "algorithms/scale/nearest_neighbor_scaler.h"
 #include "control_types/resize_control_type.h"
 #include "image/image_document.h"
-#include "processing/resize.h"
+#include "processing/resize_types.h"
 
 #include <QObject>
 
@@ -58,7 +58,8 @@ class ProcessingController final : public QObject {
 
  private:
   void startResize(ResizeParams params);
-  void completeResize();
+
+  void updateResizeControl(const ResizeParams& params);
 
  private:
   std::mutex mtx;

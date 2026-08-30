@@ -25,13 +25,22 @@
 
 #pragma once
 
-#include "algorithms/scale/scaling_algorithm.h"
 #include "resize_types.h"
 
-#include <QImage>
+#include <QSize>
 
-QImage resize(const QImage& image, const ScalingAlgorithm& scaler, ResizeParams params);
+QSize resizeRect(const QSize& sourceSize, const QSize& targetSize, ResizeMode mode);
 
-QImage centerImageOnCanvas(const QImage& image, const QSize& targetSize);
+QSize fitRect(const QSize& sourceSize, const QSize& targetSize);
 
-QImage cropImage(const QImage& image, const QSize& targetSize, int cropOffset);
+QSize fitWithoutUpscaling(const QSize& sourceSize, const QSize& targetSize);
+
+QSize fillRect(const QSize& sourceSize, const QSize& targetSize);
+
+QSize calculateHeight(const QSize& sourceSize, int width);
+
+QSize calculateWidth(const QSize& sourceSize, int height);
+
+CropAxis defineCropAxis(const QSize& filledSize, const QSize& targetSize);
+
+int maxCropOffset(CropAxis axis, const QSize& filledSize, const QSize& targetSize);

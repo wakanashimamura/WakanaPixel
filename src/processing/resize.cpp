@@ -25,107 +25,84 @@
 
 #include "resize.h"
 
-#include "resize_geometry.h"
+#include "resize_utils.h"
 
 #include <QPainter>
 #include <QPoint>
 #include <QRect>
 
 QImage resize(const QImage& image, const ScalingAlgorithm& scaler, ResizeParams params) {
-  if (image.isNull() || params.size.isEmpty()) {
+  if (image.isNull() || params.targetSize.isEmpty()) {
     return {};
   }
 
-  switch (params.resizeMode) {
-    case ResizeMode::Original:
-      if (image.size().width() > params.size.width() &&
-          image.size().height() > params.size.height()) {
-        return resizeToFit(image, params.size, scaler, params.roundingMode);
-      }
-      return image;
-    case ResizeMode::Exact:
-      return scaler.scale(image, params.size, params.roundingMode);
+  QSize size      = resizeRect(image.size(), params.targetSize, params.resizeMode);
+  QImage dstImage = scaler.scale(image, size, params.roundingMode);
 
-    case ResizeMode::Fit:
-      return resizeToFitWithPadding(image, params.size, scaler, params.roundingMode);
-
-    case ResizeMode::Fill:
-      return resizeToFill(image, params.size, params.cropOffset, scaler, params.roundingMode);
-
-    case ResizeMode::Width:
-      return resizeByWidth(image, params.size.width(), scaler, params.roundingMode);
-
-    case ResizeMode::Height:
-      return resizeByHeight(image, params.size.height(), scaler, params.roundingMode);
+  if (params.resizeMode == ResizeMode::Fit) {
+    return centerImageOnCanvas(dstImage, params.targetSize);
   }
 
-  return {};
+  if (params.resizeMode == ResizeMode::Fill) {
+    return cropImage(dstImage, params.targetSize, params.cropOffset);
+  }
+
+  return dstImage;
 }
 
-QImage resizeToFitWithPadding(
-    const QImage& image, QSize size, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
-) {
-  QSize newSize      = calculateAspectFitSize(image.size(), size);
-  QImage scaledImage = scaler.scale(image, newSize, roundingMode);
+QImage centerImageOnCanvas(const QImage& image, const QSize& targetSize) {
+  Q_ASSERT_X(
+      image.width() == targetSize.width() || image.height() == targetSize.height(),
+      Q_FUNC_INFO,
+      "Invalid image sizes: at least one dimension of image size must match targetSize."
+  );
 
-  QImage dstImage(size, image.format());
+  QImage dstImage(targetSize, image.format());
   dstImage.fill(Qt::black);
+
   QPainter painter(&dstImage);
 
-  QPoint point((size.width() - newSize.width()) / 2, (size.height() - newSize.height()) / 2);
+  QPoint point(
+      (targetSize.width() - image.width()) / 2,
+      (targetSize.height() - image.height()) / 2
+  );
 
-  painter.drawImage(point, scaledImage);
+  painter.drawImage(point, image);
   painter.end();
 
   return dstImage;
 }
 
-QImage resizeToFit(
-    const QImage& image, QSize size, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
-) {
-  QSize newSize = calculateAspectFitSize(image.size(), size);
-  return scaler.scale(image, newSize, roundingMode);
-}
+QImage cropImage(const QImage& image, const QSize& targetSize, int cropOffset) {
+  Q_ASSERT_X(
+      image.width() == targetSize.width() || image.height() == targetSize.height(),
+      Q_FUNC_INFO,
+      "Invalid image sizes: at least one dimension of image size must match targetSize."
+  );
 
-QImage resizeToFill(
-    const QImage& image,
-    QSize size,
-    int cropOffset,
-    const ScalingAlgorithm& scaler,
-    const RoundingMode roundingMode
-) {
-  AspectFillResult result     = calculateAspectFillSize(image.size(), size);
-  const int boundedCropOffset = std::clamp(cropOffset, 0, result.maxCropOffset);
-  QImage scaledImage          = scaler.scale(image, result.size, roundingMode);
+  CropAxis cropAxis = defineCropAxis(image.size(), targetSize);
 
-  QImage dstImage(size, image.format());
+  if (cropAxis == CropAxis::None) {
+    return image;
+  }
+
+  int maxOffset    = maxCropOffset(cropAxis, image.size(), targetSize);
+  const int offset = std::clamp(cropOffset, 0, maxOffset);
+
+  QImage dstImage(targetSize, image.format());
   dstImage.fill(Qt::black);
 
   QPainter painter(&dstImage);
 
   QRect rect(
-      result.fillReference == AspectFillDimension::Width ? 0 : boundedCropOffset,
-      result.fillReference == AspectFillDimension::Height ? 0 : boundedCropOffset,
-      size.width(),
-      size.height()
+      cropAxis == CropAxis::Vertical ? 0 : offset,
+      cropAxis == CropAxis::Horizontal ? 0 : offset,
+      targetSize.width(),
+      targetSize.height()
   );
 
-  painter.drawImage(QPoint(), scaledImage, rect);
+  painter.drawImage(QPoint(), image, rect);
   painter.end();
 
   return dstImage;
-}
-
-QImage resizeByWidth(
-    const QImage& image, int width, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
-) {
-  QSize newSize = calculateByWidth(image.size(), width);
-  return scaler.scale(image, newSize, roundingMode);
-}
-
-QImage resizeByHeight(
-    const QImage& image, int height, const ScalingAlgorithm& scaler, const RoundingMode roundingMode
-) {
-  QSize newSize = calculateByHeight(image.size(), height);
-  return scaler.scale(image, newSize, roundingMode);
 }

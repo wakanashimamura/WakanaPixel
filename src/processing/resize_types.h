@@ -25,19 +25,17 @@
 
 #pragma once
 
+#include "common/wmath.h"
+
 #include <QSize>
 
-enum class AspectFillDimension { Width, Height };
+enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
 
-struct AspectFillResult {
-  QSize size;
-  AspectFillDimension fillReference;
-  int maxCropOffset;
+enum class CropAxis { Horizontal, Vertical, None };
+
+struct ResizeParams {
+  QSize targetSize;
+  ResizeMode resizeMode     = ResizeMode::Original;
+  RoundingMode roundingMode = RoundingMode::Round;
+  int cropOffset            = 0;
 };
-
-QSize calculateAspectFitSize(const QSize& sourceSize, const QSize& bounds);
-
-AspectFillResult calculateAspectFillSize(const QSize& sourceSize, const QSize& bounds);
-
-QSize calculateByWidth(const QSize& sourceSize, int width);
-QSize calculateByHeight(const QSize& sourceSize, int height);

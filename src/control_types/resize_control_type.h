@@ -26,14 +26,13 @@
 #pragma once
 
 #include "application/app_config.h"
-#include "processing/resize_geometry.h"
+#include "processing/resize_types.h"
 
 struct ResizeControlStatus {
   bool widthEnabled  = true;
   bool heightEnabled = true;
 
-  bool cropVisible             = true;
-  AspectFillDimension axisCrop = AspectFillDimension::Height;
+  CropAxis axisCrop = CropAxis::None;
 };
 
 struct ResizeParamsLimit {

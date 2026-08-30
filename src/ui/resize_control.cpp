@@ -66,7 +66,7 @@ ResizeControl::ResizeControl(QWidget* parent)
 ResizeParams ResizeControl::value() {
   ResizeParams params;
 
-  params.size         = m_size->value();
+  params.targetSize   = m_size->value();
   params.resizeMode   = m_mode->mode();
   params.roundingMode = m_rounding->mode();
   params.cropOffset   = m_crop->value();
@@ -83,7 +83,6 @@ void ResizeControl::setStatus(ResizeControlStatus status) {
   m_size->setWidthEnabled(status.widthEnabled);
   m_size->setHeightEnabled(status.heightEnabled);
 
-  m_crop->setVisible(status.cropVisible);
   m_crop->setAxis(status.axisCrop);
 }
 

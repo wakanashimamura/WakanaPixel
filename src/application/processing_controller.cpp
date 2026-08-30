@@ -25,7 +25,8 @@
 
 #include "processing_controller.h"
 
-#include "processing/resize_geometry.h"
+#include "processing/resize.h"
+#include "processing/resize_utils.h"
 
 #include <thread>
 
@@ -47,46 +48,16 @@ void ProcessingController::openImage(const QString& filePath) {
 }
 
 void ProcessingController::saveImage(const QString& filePath) {
+  std::lock_guard<std::mutex> lock(mtx);
   m_imageDocument.save(filePath);
 }
 
 void ProcessingController::resizeImage(ResizeParams params) {
-  if (m_imageDocument.isNull() || params.size.isEmpty()) {
+  if (m_imageDocument.isNull() || params.targetSize.isEmpty()) {
     return;
   }
 
-  AspectFillResult fillResult =
-      calculateAspectFillSize(m_imageDocument.originalImage().size(), params.size);
-
-  ResizeControlStatus status;
-  ResizeParamsLimit limit;
-
-  status.axisCrop      = fillResult.fillReference;
-  status.widthEnabled  = params.resizeMode == ResizeMode::Height ? false : true;
-  status.heightEnabled = params.resizeMode == ResizeMode::Width ? false : true;
-  status.cropVisible   = params.resizeMode == ResizeMode::Fill ? true : false;
-
-  QSize resolvedSize  = params.size;
-  limit.maxCropOffset = fillResult.maxCropOffset;
-
-  if (params.resizeMode == ResizeMode::Width || params.resizeMode == ResizeMode::Height) {
-    QSize maxFitSize = calculateAspectFitSize(
-        m_imageDocument.originalImage().size(),
-        {k_maxResizeImageSize, k_maxResizeImageSize}
-    );
-    limit.maxWidth  = maxFitSize.width();
-    limit.maxHeight = maxFitSize.height();
-  }
-
-  if (params.resizeMode == ResizeMode::Width) {
-    resolvedSize = calculateByWidth(m_imageDocument.originalImage().size(), params.size.width());
-  } else if (params.resizeMode == ResizeMode::Height) {
-    resolvedSize = calculateByHeight(m_imageDocument.originalImage().size(), params.size.height());
-  }
-
-  emit updateResizeControlStatus(status);
-  emit updateResizeParamsLimit(limit);
-  emit updateResizeControlValue(resolvedSize);
+  updateResizeControl(params);
 
   if (m_isStartResize && !isResizeRequired) {
     isResizeRequired = true;
@@ -97,9 +68,44 @@ void ProcessingController::resizeImage(ResizeParams params) {
   }
 
   m_isStartResize = true;
-
   std::thread th(&ProcessingController::startResize, this, params);
   th.detach();
+}
+
+void ProcessingController::updateResizeControl(const ResizeParams& params) {
+  ResizeControlStatus status;
+  ResizeParamsLimit limit;
+  QSize size = params.targetSize;
+
+  status.axisCrop = CropAxis::None;
+
+  if (params.resizeMode == ResizeMode::Fill) {
+    QSize filledSize    = fillRect(m_imageDocument.originalImage().size(), params.targetSize);
+    status.axisCrop     = defineCropAxis(filledSize, params.targetSize);
+    limit.maxCropOffset = maxCropOffset(status.axisCrop, filledSize, params.targetSize);
+  }
+
+  if (params.resizeMode == ResizeMode::Width || params.resizeMode == ResizeMode::Height) {
+    if (params.resizeMode == ResizeMode::Width) {
+      status.heightEnabled = false;
+      size = calculateHeight(m_imageDocument.originalImage().size(), params.targetSize.width());
+    } else {
+      status.widthEnabled = false;
+      size = calculateWidth(m_imageDocument.originalImage().size(), params.targetSize.height());
+    }
+
+    QSize maxFitSize = fitRect(
+        m_imageDocument.originalImage().size(),
+        QSize(k_maxResizeImageSize, k_maxResizeImageSize)
+    );
+
+    limit.maxWidth  = maxFitSize.width();
+    limit.maxHeight = maxFitSize.height();
+  }
+
+  emit updateResizeControlStatus(status);
+  emit updateResizeParamsLimit(limit);
+  emit updateResizeControlValue(size);
 }
 
 void ProcessingController::startResize(ResizeParams params) {
