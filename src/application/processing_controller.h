@@ -44,29 +44,29 @@ class ProcessingController final : public QObject {
   void openImage(const QString& filePath);
   void saveImage(const QString& filePath);
 
-  void resizeImage(ResizeParams params);
+  void imageProcessing(ResizeParams settings);
 
  signals:
   void imageLoaded(bool isLoaded);
 
   void imageReadyDisplay(const QImage& image);
 
-  void requestResize();
   void updateResizeControlValue(QSize size);
   void updateResizeControlStatus(ResizeControlStatus status);
   void updateResizeParamsLimit(ResizeParamsLimit status);
 
  private:
-  void startResize(ResizeParams params);
+  void startResize();
 
   void updateResizeControl(const ResizeParams& params);
 
  private:
-  std::mutex mtx;
+  std::mutex m_mtxProcessing;
+  std::mutex m_mtxParams;
 
   ImageDocument m_imageDocument;
   ScalingAlgorithm* m_scaler;
 
-  bool m_isStartResize  = false;
-  bool isResizeRequired = false;
+  ResizeParams m_lastParams;
+  bool m_isProcessing = false;
 };

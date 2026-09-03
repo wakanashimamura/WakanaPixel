@@ -38,4 +38,14 @@ struct ResizeParams {
   ResizeMode resizeMode     = ResizeMode::Original;
   RoundingMode roundingMode = RoundingMode::Round;
   int cropOffset            = 0;
+
+  bool operator==(const ResizeParams& other) const {
+    return targetSize == other.targetSize && resizeMode == other.resizeMode &&
+           roundingMode == other.roundingMode && cropOffset == other.cropOffset;
+  }
+
+  bool operator!=(const ResizeParams& other) const {
+    return targetSize != other.targetSize || resizeMode != other.resizeMode ||
+           roundingMode != other.roundingMode || cropOffset != other.cropOffset;
+  }
 };

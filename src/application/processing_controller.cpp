@@ -36,7 +36,7 @@ ProcessingController::ProcessingController(QObject* parent)
 
 void ProcessingController::openImage(const QString& filePath) {
   {
-    std::lock_guard<std::mutex> lock(mtx);
+    std::lock_guard<std::mutex> lock(m_mtxProcessing);
 
     if (!m_imageDocument.load(filePath)) {
       return;
@@ -44,32 +44,30 @@ void ProcessingController::openImage(const QString& filePath) {
   }
 
   emit imageLoaded(true);
-  emit requestResize();
 }
 
 void ProcessingController::saveImage(const QString& filePath) {
-  std::lock_guard<std::mutex> lock(mtx);
+  std::lock_guard<std::mutex> lock(m_mtxProcessing);
   m_imageDocument.save(filePath);
 }
 
-void ProcessingController::resizeImage(ResizeParams params) {
+void ProcessingController::imageProcessing(ResizeParams params) {
   if (m_imageDocument.isNull() || params.targetSize.isEmpty()) {
     return;
   }
 
+  {
+    std::lock_guard<std::mutex> lock(m_mtxParams);
+    m_lastParams = params;
+  }
+
+  if (!m_isProcessing) {
+    m_isProcessing = true;
+    std::thread th(&ProcessingController::startResize, this);
+    th.detach();
+  }
+
   updateResizeControl(params);
-
-  if (m_isStartResize && !isResizeRequired) {
-    isResizeRequired = true;
-  }
-
-  if (m_isStartResize) {
-    return;
-  }
-
-  m_isStartResize = true;
-  std::thread th(&ProcessingController::startResize, this, params);
-  th.detach();
 }
 
 void ProcessingController::updateResizeControl(const ResizeParams& params) {
@@ -108,16 +106,27 @@ void ProcessingController::updateResizeControl(const ResizeParams& params) {
   emit updateResizeControlValue(size);
 }
 
-void ProcessingController::startResize(ResizeParams params) {
-  std::lock_guard<std::mutex> lock(mtx);
-
-  QImage image = resize(m_imageDocument.originalImage(), *m_scaler, params);
-  m_imageDocument.setScaledImage(image);
-  emit imageReadyDisplay(m_imageDocument.scaledImage());
-
-  m_isStartResize = false;
-  if (isResizeRequired) {
-    isResizeRequired = false;
-    emit requestResize();
+void ProcessingController::startResize() {
+  ResizeParams workParams;
+  {
+    std::lock_guard<std::mutex> lock_params(m_mtxParams);
+    workParams = m_lastParams;
   }
+
+  std::lock_guard<std::mutex> lock(m_mtxProcessing);
+
+  for (;;) {
+    QImage image = resize(m_imageDocument.originalImage(), *m_scaler, workParams);
+    m_imageDocument.setScaledImage(image);
+    emit imageReadyDisplay(m_imageDocument.scaledImage());
+
+    {
+      std::lock_guard<std::mutex> lock_params(m_mtxParams);
+      if (workParams == m_lastParams) {
+        break;
+      }
+      workParams = m_lastParams;
+    }
+  }
+  m_isProcessing = false;
 }

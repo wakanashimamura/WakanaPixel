@@ -53,6 +53,7 @@ void MainWindow::setController(ProcessingController* controller) {
   m_controller = controller;
 
   connect(m_controller, &ProcessingController::imageLoaded, this, [this](bool isLoaded) {
+    m_controller->imageProcessing(m_ui->resizeControl->value());
     m_ui->buttonSaveImage->setEnabled(isLoaded);
     m_ui->resizeControl->setEnabled(isLoaded);
   });
@@ -88,12 +89,8 @@ void MainWindow::setController(ProcessingController* controller) {
       m_ui->resizeControl,
       &ResizeControl::valueChanged,
       m_controller,
-      &ProcessingController::resizeImage
+      &ProcessingController::imageProcessing
   );
-
-  connect(m_controller, &ProcessingController::requestResize, this, [this]() {
-    m_controller->resizeImage(m_ui->resizeControl->value());
-  });
 }
 
 void MainWindow::selectImageToOpen() {
