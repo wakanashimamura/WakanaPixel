@@ -50,9 +50,11 @@ ResizeControl::ResizeControl(QWidget* parent)
   setLimit(ResizeParamsLimit());
 
   connect(m_mode, &ResizeModeSelector::modeChanged, this, [this]() {
+    updatePreset();
     emit ResizeControl::valueChanged(value());
   });
   connect(m_size, &ImageSizeSelector::valueChanged, this, [this]() {
+    updatePreset();
     emit ResizeControl::valueChanged(value());
   });
   connect(m_crop, &CropPositionSelector::valueChanged, this, [this]() {
@@ -91,4 +93,21 @@ void ResizeControl::setLimit(ResizeParamsLimit limit) {
   m_size->setHeightRange(limit.minHeight, limit.maxHeight);
 
   m_crop->setMaximum(limit.maxCropOffset);
+}
+
+void ResizeControl::updatePreset() {
+  QSize presetValue = m_size->presetValue();
+
+  if (presetValue.isEmpty()) {
+    return;
+  }
+
+  const QSignalBlocker blocker(m_size);
+
+  if (presetValue.width() <= m_size->maximumWidth() &&
+      presetValue.height() <= m_size->maximumHeight()) {
+    m_size->setValue(presetValue);
+  } else {
+    m_size->setModeCustomPreset();
+  }
 }

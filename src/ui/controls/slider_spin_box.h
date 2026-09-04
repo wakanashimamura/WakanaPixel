@@ -39,6 +39,8 @@ class SliderSpinBox : public QWidget {
 
   [[nodiscard]] int value() const;
 
+  int maximum() const;
+
  public slots:
   void setValue(int value);
   void setRange(int minimum, int maximum);

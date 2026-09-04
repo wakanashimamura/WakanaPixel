@@ -39,11 +39,17 @@ class ImageSizeSelector : public QGroupBox {
 
   [[nodiscard]] QSize value() const;
 
+  int maximumWidth() const;
+  int maximumHeight() const;
+
   void setWidthEnabled(bool enabled);
   bool isWidthEnabled() const;
 
   void setHeightEnabled(bool enabled);
   bool isHeightEnabled() const;
+
+  [[nodiscard]] QSize presetValue();
+  void setModeCustomPreset();
 
  public slots:
   void setValue(QSize value);

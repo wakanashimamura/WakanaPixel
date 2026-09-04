@@ -53,6 +53,8 @@ class ResizeControl : public QGroupBox {
   void valueChanged(ResizeParams params);
 
  private:
+  void updatePreset();
+
   ResizeModeSelector* m_mode;
   ImageSizeSelector* m_size;
   CropPositionSelector* m_crop;

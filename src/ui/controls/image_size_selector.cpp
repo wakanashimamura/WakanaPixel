@@ -59,6 +59,14 @@ QSize ImageSizeSelector::value() const {
   return QSize(m_width->value(), m_height->value());
 }
 
+int ImageSizeSelector::maximumWidth() const {
+  return m_width->maximum();
+}
+
+int ImageSizeSelector::maximumHeight() const {
+  return m_height->maximum();
+}
+
 void ImageSizeSelector::setWidthEnabled(bool enabled) {
   m_widthEnabled = enabled;
   m_width->setEnabled(enabled);
@@ -77,6 +85,15 @@ void ImageSizeSelector::setHeightEnabled(bool enabled) {
 
 bool ImageSizeSelector::isHeightEnabled() const {
   return m_heightEnabled;
+}
+
+QSize ImageSizeSelector::presetValue() {
+  return m_preset->value();
+}
+
+void ImageSizeSelector::setModeCustomPreset() {
+  QSignalBlocker blocker(m_preset);
+  m_preset->setCustom();
 }
 
 void ImageSizeSelector::setValue(QSize value) {

@@ -51,7 +51,6 @@ SliderSpinBox::SliderSpinBox(QString label, QWidget* parent)
   layout->addWidget(m_slider);
   layout->setContentsMargins(0, 0, 0, 0);
 
-
   connect(m_slider, &QSlider::valueChanged, m_spinBox, &QSpinBox::setValue);
   connect(m_spinBox, &QSpinBox::valueChanged, m_slider, &QSlider::setValue);
   connect(m_slider, &QSlider::valueChanged, this, &SliderSpinBox::valueChanged);
@@ -59,6 +58,10 @@ SliderSpinBox::SliderSpinBox(QString label, QWidget* parent)
 
 int SliderSpinBox::value() const {
   return m_slider->value();
+}
+
+int SliderSpinBox::maximum() const {
+  return m_slider->maximum();
 }
 
 void SliderSpinBox::setValue(int value) {
