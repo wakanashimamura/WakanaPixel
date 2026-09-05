@@ -25,4 +25,6 @@
 
 #pragma once
 
-enum class ScalingAlgorithmType { NearestNeighbor };
+enum class ScalingAlgorithmType {
+  NearestNeighbor
+};

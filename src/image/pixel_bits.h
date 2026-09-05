@@ -31,7 +31,10 @@
 
 #include <type_traits>
 
-enum class AccessMode { Mutable, ReadOnly };
+enum class AccessMode {
+  Mutable,
+  ReadOnly
+};
 
 template <AccessMode Mode>
 class PixelBits {

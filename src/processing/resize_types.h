@@ -29,9 +29,20 @@
 
 #include <QSize>
 
-enum class ResizeMode { Original, Exact, Fit, Fill, Width, Height };
+enum class ResizeMode {
+  Original,
+  Exact,
+  Fit,
+  Fill,
+  Width,
+  Height
+};
 
-enum class CropAxis { Horizontal, Vertical, None };
+enum class CropAxis {
+  Horizontal,
+  Vertical,
+  None
+};
 
 struct ResizeParams {
   QSize targetSize;

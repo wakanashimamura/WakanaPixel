@@ -7,6 +7,8 @@ TabWidth: 2
 UseTab: Never
 ContinuationIndentWidth: 4
 
+AllowShortEnumsOnASingleLine: false
+
 BinPackArguments: false
 BinPackParameters: false
 

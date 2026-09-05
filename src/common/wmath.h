@@ -28,7 +28,11 @@
 #include <cmath>
 #include <cstdint>
 
-enum class RoundingMode { Floor, Round, Ceil };
+enum class RoundingMode {
+  Floor,
+  Round,
+  Ceil
+};
 
 [[nodiscard]] inline int round(double value, RoundingMode mode) {
   switch (mode) {
