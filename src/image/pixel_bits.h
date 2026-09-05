@@ -46,7 +46,7 @@ class PixelBits {
   static constexpr bool kIsReadOnly = (Mode == AccessMode::ReadOnly);
 
   using BytePtr  = std::conditional_t<kIsReadOnly, const uchar*, uchar*>;
-  using PixelPtr = std::conditional_t<kIsReadOnly, const RGB*, RGB*>;
+  using PixelPtr = std::conditional_t<kIsReadOnly, const Rgb*, Rgb*>;
   using ImageRef = std::conditional_t<kIsReadOnly, const QImage&, QImage&>;
   using ImagePtr = std::conditional_t<kIsReadOnly, const QImage*, QImage*>;
 
@@ -79,9 +79,9 @@ class PixelBits {
     return reinterpret_cast<PixelPtr>(m_bits + m_bytesPerLine * index);
   }
 
-  [[nodiscard]] const RGB* operator[](size_t index) const {
+  [[nodiscard]] const Rgb* operator[](size_t index) const {
     Q_ASSERT_X(!isNull(), Q_FUNC_INFO, "Null pointer access detected.");
-    return reinterpret_cast<const RGB*>(m_bits + m_bytesPerLine * index);
+    return reinterpret_cast<const Rgb*>(m_bits + m_bytesPerLine * index);
   }
 
   // ----------------------------------------------------------------------------------------------

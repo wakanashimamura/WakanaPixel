@@ -27,20 +27,9 @@
 
 #include <cstdint>
 
-// #AARRGGBB
+//format 0xAARRGGBB
 
-union RGB {
-  // ----------------------------------------------------------------------------------------------
-  // Type aliases
-  // ----------------------------------------------------------------------------------------------
-
-  using ValueType   = std::uint32_t;
-  using ChannelType = std::uint8_t;
-
-  // ----------------------------------------------------------------------------------------------
-  // Enumerations
-  // ----------------------------------------------------------------------------------------------
-
+class Rgb {
   enum Channel {
     Alpha,
     Red,
@@ -48,68 +37,40 @@ union RGB {
     Blue
   };
 
-  // ----------------------------------------------------------------------------------------------
-  // Constants
-  // ----------------------------------------------------------------------------------------------
-
-  static constexpr double kMaxChannel = 255.0;
-
-  // ----------------------------------------------------------------------------------------------
-  // Data members
-  // ----------------------------------------------------------------------------------------------
-
-  ValueType argb{};
-
-  struct {
-    ChannelType blue;
-    ChannelType green;
-    ChannelType red;
-    ChannelType alpha;
+  enum Shifts {
+    BlueShift  = 0,
+    GreenShift = 8,
+    RedShift   = 16,
+    AlphaShift = 24
   };
 
-  // ----------------------------------------------------------------------------------------------
-  // Constructors
-  // ----------------------------------------------------------------------------------------------
+  static constexpr std::uint8_t kMaxChannel = 255;
 
-  RGB() = default;
+  Rgb(std::uint32_t color);
+  Rgb(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = kMaxChannel);
 
-  constexpr RGB(ValueType color) noexcept
-      : argb(color) {}
+  bool operator=(uint32_t color);
 
-  constexpr RGB(
-      ChannelType red_, ChannelType green_, ChannelType blue_, ChannelType alpha_ = 255
-  ) noexcept
-      : blue(blue_),
-        green(green_),
-        red(red_),
-        alpha(alpha_) {}
+  bool operator!=(Rgb color) const;
+  bool operator==(Rgb color) const;
 
-  // ----------------------------------------------------------------------------------------------
-  // Comparison operators
-  // ----------------------------------------------------------------------------------------------
+  std::uint8_t color(Channel channel) const;
 
-  [[nodiscard]] bool operator==(const RGB& other) const noexcept { return argb == other.argb; }
-  [[nodiscard]] bool operator==(ValueType color) const noexcept { return argb == color; }
-  [[nodiscard]] bool operator!=(const RGB& other) const noexcept { return argb != other.argb; }
-  [[nodiscard]] bool operator!=(ValueType color) const noexcept { return argb != color; }
+  std::uint32_t color() const;
+  void setColor(std::uint32_t color);
 
-  // ----------------------------------------------------------------------------------------------
-  // Channel extraction
-  // ----------------------------------------------------------------------------------------------
+  std::uint8_t alpha() const;
+  std::uint8_t red() const;
+  std::uint8_t green() const;
+  std::uint8_t blue() const;
 
-  [[nodiscard]]
-  ChannelType color(Channel channel) const {
-    switch (channel) {
-      case Channel::Red:
-        return red;
-      case Channel::Green:
-        return green;
-      case Channel::Blue:
-        return blue;
-      case Channel::Alpha:
-        return alpha;
-    }
-  }
+  void setAlpha(std::uint8_t alpha);
+  void setRed(std::uint8_t red);
+  void setGreen(std::uint8_t green);
+  void setBlue(std::uint8_t blue);
+
+ private:
+  std::uint32_t m_color;
 };
 
-static_assert(sizeof(RGB) == 4, "RGB must be exactly 4 bytes");
+static_assert(sizeof(Rgb) == 4, "RGB must be exactly 4 bytes");

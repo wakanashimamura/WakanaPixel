@@ -1,4 +1,6 @@
 qt_add_library(wakana_pixel_image STATIC
+  colors/rgb.cpp
+
   image_document.cpp
 )
 
