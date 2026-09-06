@@ -30,6 +30,7 @@
 //format 0xAARRGGBB
 
 class Rgb {
+ public:
   enum Channel {
     Alpha,
     Red,
@@ -46,6 +47,7 @@ class Rgb {
 
   static constexpr std::uint8_t kMaxChannel = 255;
 
+  Rgb() = default;
   Rgb(std::uint32_t color);
   Rgb(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = kMaxChannel);
 
@@ -70,7 +72,7 @@ class Rgb {
   void setBlue(std::uint8_t blue);
 
  private:
-  std::uint32_t m_color;
+  std::uint32_t m_color{};
 };
 
 static_assert(sizeof(Rgb) == 4, "RGB must be exactly 4 bytes");

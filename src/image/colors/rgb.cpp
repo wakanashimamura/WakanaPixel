@@ -67,6 +67,7 @@ uint8_t Rgb::color(Channel channel) const {
       Q_ASSERT_X(false, Q_FUNC_INFO, "Unexpected channel value");
       break;
   }
+  return 0;
 }
 
 // clang-format off
