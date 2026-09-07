@@ -1,5 +1,6 @@
+#include "image/colors/rgb.h"
+
 #include <gtest/gtest.h>
-#include <image/colors/rgb.h>
 
 // clang-format off
 

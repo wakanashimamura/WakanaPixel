@@ -22,48 +22,34 @@
 // Repository: https://github.com/wakanashimamura/WakanaPixel
 //
 // ================================================================================================
+// XYZ to Lab
+// http://www.brucelindbloom.com/index.html?Eqn_XYZ_to_Lab.html
+// https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIE_XYZ_to_CIELAB
+// https://rgbatohex.com/tools/xyz-to-lab
 
-#include "image_document.h"
+#pragma once
 
-#include <QColorSpace>
+class Rgb;
+class Xyz;
 
-bool ImageDocument::load(const QString& filePath) {
-  QImage image;
-  if (filePath.isEmpty()) {
-    return false;
-  }
+class Lab {
+ public:
+  Lab() = default;
+  Lab(double l, double a, double b);
 
-  if (!image.load(filePath)) {
-    return false;
-  }
+  static Lab fromRgb(Rgb color);
+  static Lab fromXyz(Xyz color);
 
-  m_originalImage = image.convertToFormat(QImage::Format_RGB32);
-  m_originalImage.setColorSpace(QColorSpace::SRgb);
-  m_scaledImage = m_originalImage;
+  double l() const;
+  double a() const;
+  double b() const;
 
-  return true;
-}
+  void setL(double l);
+  void setA(double a);
+  void setB(double b);
 
-bool ImageDocument::save(const QString& filePath) const {
-  if (filePath.isEmpty()) {
-    return false;
-  }
-
-  return m_scaledImage.save(filePath);
-}
-
-bool ImageDocument::isNull() const noexcept {
-  return m_originalImage.isNull();
-}
-
-const QImage& ImageDocument::originalImage() const noexcept {
-  return m_originalImage;
-}
-
-const QImage& ImageDocument::scaledImage() const noexcept {
-  return m_scaledImage;
-}
-
-void ImageDocument::setScaledImage(QImage image) noexcept {
-  m_scaledImage = std::move(image);
-}
+ private:
+  double m_l;
+  double m_a;
+  double m_b;
+};

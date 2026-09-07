@@ -22,48 +22,48 @@
 // Repository: https://github.com/wakanashimamura/WakanaPixel
 //
 // ================================================================================================
+// Formula how to convert between sRGB and CIE-XYZ
+// https://www.image-engineering.de/en/resources/tech-notes/convert-between-srgb-and-ciexyz/
 
-#include "image_document.h"
+#pragma once
 
-#include <QColorSpace>
+#include <array>
+#include <cmath>
 
-bool ImageDocument::load(const QString& filePath) {
-  QImage image;
-  if (filePath.isEmpty()) {
-    return false;
-  }
+class Rgb;
 
-  if (!image.load(filePath)) {
-    return false;
-  }
+class Xyz {
+ public:
+  Xyz() = default;
+  Xyz(double x, double y, double z);
 
-  m_originalImage = image.convertToFormat(QImage::Format_RGB32);
-  m_originalImage.setColorSpace(QColorSpace::SRgb);
-  m_scaledImage = m_originalImage;
+  static Xyz fromRgb(Rgb color);
 
-  return true;
-}
+  double x() const;
+  double y() const;
+  double z() const;
 
-bool ImageDocument::save(const QString& filePath) const {
-  if (filePath.isEmpty()) {
-    return false;
-  }
+  void setX(double x);
+  void setY(double y);
+  void setZ(double z);
 
-  return m_scaledImage.save(filePath);
-}
+ private:
+  struct DoubleSRgb {
+    DoubleSRgb() = default;
 
-bool ImageDocument::isNull() const noexcept {
-  return m_originalImage.isNull();
-}
+    DoubleSRgb(double red_, double green_, double blue_)
+        : red(red_),
+          green(green_),
+          blue(blue_) {}
 
-const QImage& ImageDocument::originalImage() const noexcept {
-  return m_originalImage;
-}
+    double red{};
+    double green{};
+    double blue{};
+  };
 
-const QImage& ImageDocument::scaledImage() const noexcept {
-  return m_scaledImage;
-}
+  static const std::array<double, 256> linearSrgb;
 
-void ImageDocument::setScaledImage(QImage image) noexcept {
-  m_scaledImage = std::move(image);
-}
+  double m_x{};
+  double m_y{};
+  double m_z{};
+};

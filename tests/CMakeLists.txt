@@ -11,6 +11,7 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 qt_add_executable(unit_tests
+  lab_test.cpp
   rgb_test.cpp
 )
 

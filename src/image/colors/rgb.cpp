@@ -37,16 +37,17 @@ Rgb::Rgb(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha) {
   setBlue(blue);
 }
 
-bool Rgb::operator=(uint32_t color) {
-  return m_color = color;
+Rgb& Rgb::operator=(uint32_t color) {
+  m_color = color;
+  return *this;
 }
 
-bool Rgb::operator!=(Rgb color) const {
-  return m_color != color.m_color;
+bool Rgb::operator!=(const Rgb& other) const {
+  return m_color != other.m_color;
 }
 
-bool Rgb::operator==(Rgb color) const {
-  return m_color == color.m_color;
+bool Rgb::operator==(const Rgb& other) const {
+  return m_color == other.m_color;
 }
 
 uint8_t Rgb::color(Channel channel) const {

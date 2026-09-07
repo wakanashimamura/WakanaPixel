@@ -45,16 +45,14 @@ class Rgb {
     AlphaShift = 24
   };
 
-  static constexpr std::uint8_t kMaxChannel = 255;
-
   Rgb() = default;
   Rgb(std::uint32_t color);
-  Rgb(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = kMaxChannel);
+  Rgb(std::uint8_t red, std::uint8_t green, std::uint8_t blue, std::uint8_t alpha = 255);
 
-  bool operator=(uint32_t color);
+  Rgb& operator=(uint32_t color);
 
-  bool operator!=(Rgb color) const;
-  bool operator==(Rgb color) const;
+  bool operator!=(const Rgb& other) const;
+  bool operator==(const Rgb& other) const;
 
   std::uint8_t color(Channel channel) const;
 
