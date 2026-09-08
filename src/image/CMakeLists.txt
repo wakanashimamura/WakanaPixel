@@ -4,6 +4,7 @@ qt_add_library(wakana_pixel_image STATIC
   colors/xyz.cpp
 
   image_document.cpp
+  palette.cpp
 )
 
 target_link_libraries(wakana_pixel_image PUBLIC
