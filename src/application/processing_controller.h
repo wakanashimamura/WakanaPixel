@@ -26,7 +26,6 @@
 #pragma once
 
 #include "algorithms/scale/nearest_neighbor_scaler.h"
-#include "control_types/resize_control_type.h"
 #include "image/image_document.h"
 #include "processing/resize_types.h"
 
@@ -51,14 +50,12 @@ class ProcessingController final : public QObject {
 
   void imageReadyDisplay(const QImage& image);
 
-  void updateResizeControlValue(QSize size);
-  void updateResizeControlStatus(ResizeControlStatus status);
-  void updateResizeParamsLimit(ResizeParamsLimit status);
+  void ResizeStateChanged(ResizeState status);
 
  private:
   void startResize();
 
-  void updateResizeControl(const ResizeParams& params);
+  void updateResizeState(const ResizeParams& params);
 
  private:
   std::mutex m_mtxProcessing;

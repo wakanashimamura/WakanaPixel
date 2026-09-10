@@ -33,4 +33,5 @@ target_link_libraries(wakana_pixel_ui PUBLIC
   Qt6::Gui
   Qt6::Widgets
   wakana_pixel_includes
+  wakana_pixel_image
 )

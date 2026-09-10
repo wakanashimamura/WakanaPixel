@@ -46,11 +46,26 @@ ResizeControl::ResizeControl(QWidget* parent)
   layout->addWidget(m_crop);
   layout->addWidget(m_rounding);
 
-  setStatus(ResizeControlStatus());
-  setLimit(ResizeParamsLimit());
-
   connect(m_mode, &ResizeModeSelector::modeChanged, this, [this]() {
     updatePreset();
+
+    switch (m_mode->mode()) {
+      case ResizeMode::Width:
+        m_size->setWidthEnabled(true);
+        m_size->setHeightEnabled(false);
+        break;
+
+      case ResizeMode::Height:
+        m_size->setWidthEnabled(false);
+        m_size->setHeightEnabled(true);
+        break;
+
+      default:
+        m_size->setWidthEnabled(true);
+        m_size->setHeightEnabled(true);
+        break;
+    }
+
     emit ResizeControl::valueChanged(value());
   });
   connect(m_size, &ImageSizeSelector::valueChanged, this, [this]() {
@@ -76,23 +91,15 @@ ResizeParams ResizeControl::value() {
   return params;
 }
 
-void ResizeControl::setSize(QSize size) {
-  const QSignalBlocker blockSize(m_size);
-  m_size->setValue(size);
-}
 
-void ResizeControl::setStatus(ResizeControlStatus status) {
-  m_size->setWidthEnabled(status.widthEnabled);
-  m_size->setHeightEnabled(status.heightEnabled);
+void ResizeControl::setResizeState(ResizeState state) {
+  m_size->setValue(state.size);
 
-  m_crop->setAxis(status.axisCrop);
-}
+  m_size->setWidthRange(state.minWidth, state.maxWidth);
+  m_size->setHeightRange(state.minHeight, state.maxHeight);
 
-void ResizeControl::setLimit(ResizeParamsLimit limit) {
-  m_size->setWidthRange(limit.minWidth, limit.maxWidth);
-  m_size->setHeightRange(limit.minHeight, limit.maxHeight);
-
-  m_crop->setMaximum(limit.maxCropOffset);
+  m_crop->setMaximum(state.maxCropOffset);
+  m_crop->setAxis(state.cropAxis);
 }
 
 void ResizeControl::updatePreset() {

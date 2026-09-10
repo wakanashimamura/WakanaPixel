@@ -26,6 +26,7 @@
 #pragma once
 
 #include "common/wmath.h"
+#include "application/app_config.h"
 
 #include <QSize>
 
@@ -59,4 +60,16 @@ struct ResizeParams {
     return targetSize != other.targetSize || resizeMode != other.resizeMode ||
            roundingMode != other.roundingMode || cropOffset != other.cropOffset;
   }
+};
+
+struct ResizeState {
+  QSize size{k_minResizeImageSize, k_minResizeImageSize};
+  int minWidth = k_minResizeImageSize;
+  int maxWidth = k_maxResizeImageSize;
+
+  int minHeight = k_minResizeImageSize;
+  int maxHeight = k_maxResizeImageSize;
+
+  int maxCropOffset = 0;
+  CropAxis cropAxis = CropAxis::None;
 };

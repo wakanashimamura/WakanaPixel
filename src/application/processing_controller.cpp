@@ -67,43 +67,7 @@ void ProcessingController::imageProcessing(ResizeParams params) {
     th.detach();
   }
 
-  updateResizeControl(params);
-}
-
-void ProcessingController::updateResizeControl(const ResizeParams& params) {
-  ResizeControlStatus status;
-  ResizeParamsLimit limit;
-  QSize size = params.targetSize;
-
-  status.axisCrop = CropAxis::None;
-
-  if (params.resizeMode == ResizeMode::Fill) {
-    QSize filledSize    = fillRect(m_imageDocument.originalImage().size(), params.targetSize);
-    status.axisCrop     = defineCropAxis(filledSize, params.targetSize);
-    limit.maxCropOffset = maxCropOffset(status.axisCrop, filledSize, params.targetSize);
-  }
-
-  if (params.resizeMode == ResizeMode::Width || params.resizeMode == ResizeMode::Height) {
-    if (params.resizeMode == ResizeMode::Width) {
-      status.heightEnabled = false;
-      size = calculateHeight(m_imageDocument.originalImage().size(), params.targetSize.width());
-    } else {
-      status.widthEnabled = false;
-      size = calculateWidth(m_imageDocument.originalImage().size(), params.targetSize.height());
-    }
-
-    QSize maxFitSize = fitRect(
-        m_imageDocument.originalImage().size(),
-        QSize(k_maxResizeImageSize, k_maxResizeImageSize)
-    );
-
-    limit.maxWidth  = maxFitSize.width();
-    limit.maxHeight = maxFitSize.height();
-  }
-
-  emit updateResizeControlStatus(status);
-  emit updateResizeParamsLimit(limit);
-  emit updateResizeControlValue(size);
+  updateResizeState(params);
 }
 
 void ProcessingController::startResize() {
@@ -129,4 +93,34 @@ void ProcessingController::startResize() {
     }
   }
   m_isProcessing = false;
+}
+
+void ProcessingController::updateResizeState(const ResizeParams& params) {
+  ResizeState state;
+  state.size = params.targetSize;
+  if (params.resizeMode == ResizeMode::Fill) {
+    QSize filledSize    = fillRect(m_imageDocument.originalImage().size(), params.targetSize);
+    state.cropAxis      = defineCropAxis(filledSize, params.targetSize);
+    state.maxCropOffset = maxCropOffset(state.cropAxis, filledSize, params.targetSize);
+  }
+
+  if (params.resizeMode == ResizeMode::Width || params.resizeMode == ResizeMode::Height) {
+    if (params.resizeMode == ResizeMode::Width) {
+      state.size =
+          calculateHeight(m_imageDocument.originalImage().size(), params.targetSize.width());
+    } else {
+      state.size =
+          calculateWidth(m_imageDocument.originalImage().size(), params.targetSize.height());
+    }
+
+    QSize maxFitSize = fitRect(
+        m_imageDocument.originalImage().size(),
+        QSize(k_maxResizeImageSize, k_maxResizeImageSize)
+    );
+
+    state.maxWidth  = maxFitSize.width();
+    state.maxHeight = maxFitSize.height();
+  }
+
+  emit ResizeStateChanged(state);
 }

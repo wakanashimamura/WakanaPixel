@@ -65,25 +65,10 @@ void MainWindow::setController(ProcessingController* controller) {
       &ImageView::setImage
   );
 
-  connect(
-      m_controller,
-      &ProcessingController::updateResizeControlValue,
-      m_ui->resizeControl,
-      [this](QSize size) { m_ui->resizeControl->setSize(size); }
-  );
-
-  connect(
-      m_controller,
-      &ProcessingController::updateResizeControlStatus,
-      m_ui->resizeControl,
-      &ResizeControl::setStatus
-  );
-  connect(
-      m_controller,
-      &ProcessingController::updateResizeParamsLimit,
-      m_ui->resizeControl,
-      &ResizeControl::setLimit
-  );
+  connect(m_controller, &ProcessingController::ResizeStateChanged, [this](ResizeState status) {
+    const QSignalBlocker blocker(m_ui->resizeControl);
+    m_ui->resizeControl->setResizeState(status);
+  });
 
   connect(
       m_ui->resizeControl,

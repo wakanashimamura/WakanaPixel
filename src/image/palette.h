@@ -72,3 +72,13 @@ class Palette {
   RGBColorList m_rgbList;
   LabColorList m_labList;
 };
+
+//-----------------------------------------------
+//
+//
+
+extern Palette testPalette1;
+
+//
+//
+//______________________________________________

@@ -25,9 +25,9 @@
 
 #pragma once
 
-#include <QGroupBox>
+#include "processing/resize_types.h"
 
-#include <control_types/resize_control_type.h>
+#include <QGroupBox>
 
 class CropPositionSelector;
 class ImageSizeSelector;
@@ -44,10 +44,7 @@ class ResizeControl : public QGroupBox {
   ResizeParams value();
 
  public slots:
-  void setSize(QSize size);
-
-  void setStatus(ResizeControlStatus status);
-  void setLimit(ResizeParamsLimit limit);
+  void setResizeState(ResizeState state);
 
  signals:
   void valueChanged(ResizeParams params);
