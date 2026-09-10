@@ -24,6 +24,9 @@ qt_add_library(wakana_pixel_ui STATIC
   main_window.h
   main_window.ui
 
+  palette_control.cpp
+  palette_control.h
+
   resize_control.cpp
   resize_control.h
 )
@@ -33,4 +36,5 @@ target_link_libraries(wakana_pixel_ui PUBLIC
   Qt6::Gui
   Qt6::Widgets
   wakana_pixel_includes
+  wakana_pixel_image
 )
