@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget* parent)
 
   m_ui->buttonSaveImage->setEnabled(false);
   m_ui->resizeControl->setEnabled(false);
-
+  m_ui->colors->setPalette(testPalette1);
   connect(m_ui->buttonOpenImage, &QPushButton::clicked, this, &MainWindow::selectImageToOpen);
   connect(m_ui->buttonSaveImage, &QPushButton::clicked, this, &MainWindow::selectImageSavePath);
 }

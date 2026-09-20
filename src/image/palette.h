@@ -47,7 +47,10 @@ class Palette {
   explicit operator bool() const { return !m_rgbList.empty(); }
 
   void addColor(Rgb color);
+  void addColor(std::uint32_t color);
+
   void setColor(int index, Rgb color);
+  void setColor(int index, std::uint32_t color);
 
   void setPalette(const RGBColorList& rgbList);
   void setPalette(const QString& name, const RGBColorList& rgbList);
@@ -55,6 +58,7 @@ class Palette {
   [[nodiscard]] const RGBColorList& rgbList() const { return m_rgbList; }
   [[nodiscard]] const LabColorList& labList() const { return m_labList; }
 
+  [[nodiscard]] std::uint32_t color(int index) const;
   [[nodiscard]] Rgb rgb(int index) const;
   [[nodiscard]] Lab lab(int index) const;
 
@@ -78,6 +82,7 @@ class Palette {
 //
 
 extern Palette testPalette1;
+extern Palette testPalette2;
 
 //
 //

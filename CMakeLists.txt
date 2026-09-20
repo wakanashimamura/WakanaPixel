@@ -20,7 +20,6 @@ add_subdirectory(src/application)
 add_subdirectory(src/image)
 add_subdirectory(src/processing)
 add_subdirectory(src/ui)
-add_subdirectory(tests)
 
 qt_add_executable(wakana_pixel
   WIN32 
@@ -33,3 +32,6 @@ target_link_libraries(wakana_pixel PRIVATE
   wakana_pixel_application
   wakana_pixel_ui
 )
+
+add_subdirectory(tests)
+add_subdirectory(benchmarks)

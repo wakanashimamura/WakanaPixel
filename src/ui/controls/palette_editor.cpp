@@ -1,0 +1,46 @@
+// ================================================================================================
+//
+// WakanaPixel - Software for creating digital art by converting images into pixel art.
+//
+// Copyright (C) 2026 Wakana Shimamura
+//
+// This file is part of WakanaPixel.
+//
+// WakanaPixel is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// WakanaPixel is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with WakanaPixel. If not, see <https://www.gnu.org/licenses/>.
+//
+// Repository: https://github.com/wakanashimamura/WakanaPixel
+//
+// ================================================================================================
+
+#include "palette_editor.h"
+
+#include <QVBoxLayout>
+
+PaletteEditor::PaletteEditor(QWidget* parent)
+    : QGroupBox(parent),
+      m_paletteCanvas(new PaletteCanvas(this)) {
+  QVBoxLayout* layout = new QVBoxLayout(this);
+
+  layout->addWidget(m_paletteCanvas);
+
+  connect(m_paletteCanvas, &PaletteCanvas::paletteChanged, this, &PaletteEditor::paletteChanged);
+}
+
+const Palette& PaletteEditor::palette() const {
+  return m_paletteCanvas->palette();
+}
+
+void PaletteEditor::setPalette(const Palette& palette) {
+  m_paletteCanvas->setPalette(palette);
+}
